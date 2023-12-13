@@ -1,0 +1,23 @@
+{
+  "name": "nxu-charge-2-0",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@mdui/icons": "^1.0.2",
+    "mdui": "^2.0.2",
+    "vant": "^4.7.3",
+    "vue": "^3.3.4"
+  },
+  "devDependencies": {
+    "@vant/auto-import-resolver": "^1.0.2",
+    "@vitejs/plugin-vue": "^4.4.0",
+    "@vitejs/plugin-vue-jsx": "^3.0.2",
+    "unplugin-vue-components": "^0.25.2",
+    "vite": "^4.4.11"
+  }
+}

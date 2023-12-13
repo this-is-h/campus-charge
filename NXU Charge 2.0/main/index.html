@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh" class="mdui-theme-auto">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NXU Charge</title>
+    <!-- 移动端判断 -->
+    <!-- <script>
+        function isMobile() {
+            var curURL = window.location.href;
+            var sUserAgent = navigator.userAgent.toLowerCase();
+            var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+            var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+            var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+            var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+            var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+            var bIsAndroid = sUserAgent.match(/android/i) == "android";
+            var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+            var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+            if (
+            bIsIpad ||
+            bIsIphoneOs ||
+            bIsMidp ||
+            bIsUc7 ||
+            bIsUc ||
+            bIsAndroid ||
+            bIsCE ||
+            bIsWM
+            ) {
+                // 移动端浏览器
+                return true;
+            } else {
+                // PC端浏览器
+                return false;
+            }
+        }
+
+        isMobile() ? null : location.href = '../index.html';
+    </script> -->
+    <!-- 组件引入 -->
+    <script type="module" src="src/main.js"></script>
+    <!-- <script type="module" src="src/m.js"></script> -->
+    <!-- 自定义文件 -->
+    <!-- <link rel="stylesheet" href="@/assets/css/main.css"> -->
+    <!-- <script src="assets/js/main.js"></script> -->
+</head>
+<body>
+    <div id="config-provider">
+        <van-config-provider :theme="lightToDarkContent"></van-config-provider>
+    </div>
+    <!-- <mdui-top-app-bar id="top-bar" variant="small" scrolling="">
+        <mdui-top-app-bar-title style="padding-left: 1em;">NXU Charge</mdui-top-app-bar-title>
+        <div id="light-to-dark-div" style="display: flex;align-items: center;justify-content: center;;">
+            <mdui-button-icon style="height: 20px;" id="light-to-dark" :class="lightToDarkContent" @click="lightToDark">
+                <mdui-icon-light-mode--outlined id="light-outline"></mdui-icon-light-mode--outlined>
+                <mdui-icon-light-mode id="light"></mdui-icon-light-mode>
+                <mdui-icon-dark-mode id="dark"></mdui-icon-dark-mode>
+                <mdui-icon-dark-mode--outlined id="dark-outline"></mdui-icon-dark-mode--outlined>
+            </mdui-button-icon>
+        </div>
+        <script>
+            var menu = false;
+        </script>
+        <div id="about-popover" style="display: flex;align-items: center;justify-content: start;">
+            <van-popover id="about-popover-content" :theme="lightToDarkContent" v-model:show="showPopover" :actions="actions" @select="onSelect" @MouseEvent="changeMenu()" placement="bottom-end">
+                <template #reference>
+                    <div class="container" :class="container" id="container">
+                        <div class="first_block" id="first"></div>
+                        <div class="center_block" id="second"></div>
+                        <div class="third_block" id="third"></div>
+                        <div class="click"></div>
+                    </div>
+                </template>
+            </van-popover>
+        </div>
+    </mdui-top-app-bar> -->
+    <div id="navbar">
+        <van-nav-bar
+            title="NXU Charge"
+            left-text="返回"
+            left-arrow
+            @click-left="onClickLeft"
+            @click-right="onClickRight"
+        >
+            <template #right>
+                <svg height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="20" data-view-component="true" style="fill: var(--van-tab-text-color);">
+                    <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+                </svg>
+            </template>
+        </van-nav-bar>
+    </div>
+    <div id="main" style="height: calc(100vh - 46px);">
+        <van-tabs v-model:active="active" style="height: 100%;overflow: scroll;" sticky offset-top="46px">
+            <van-tab title="关于我们" name="about">
+                <div id="about">
+                    <van-cell-group inset>
+                        <van-cell title="这是一个什么项目？" center>
+                            <template #label class="mdui-prose">
+                                <p>
+                                    <strong><em>NXU Charge</em></strong> 由 <strong>H</strong> 开发，是一个服务于校园内电动车充电问题的项目。<br>
+                                    本项目提供校园内所有充电桩的空闲情况及剩余时间，在有充电需求时提供参考。<br><br>
+                                    如发现项目存在问题，请 <a style="font-size: 0.9em;font-weight: bold;" href="https://support.qq.com/product/533385">&gt;点此反馈&lt;</a><br>
+                                    如对项目有任何问题，请联系 <code>h.contact@foxmail.com</code>
+                                </p>
+                            </template>
+                        </van-cell>
+                    </van-cell-group>
+                    <van-cell-group inset>
+                        <van-cell title="校园内用车倡议" center>
+                            <template #label >
+                                <ol style="padding-left: 1em;list-style: auto;">
+                                    <li>
+                                        校园内遇行人、转弯时请<strong>主动减速慢行，小心驾驶</strong>。
+                                    </li>
+                                    <li>
+                                        上下课高峰时段，请<strong>尽量避免逆行</strong>；由 C 区前往 A 区、A 区前往 B 区逆行时，请<strong>保持较低速度，并靠边行驶，礼让来车</strong>。
+                                    </li>
+                                    <li>
+                                        夜间行车，请<strong>使用近光灯</strong>；如照明条件差，前有行人、车辆阻挡时，请<strong>交替使用远近光灯</strong>，避免长时间远光对相向行人、车辆造成影响。
+                                    </li>
+                                    <li>
+                                        充电结束后，请<strong>尽量及时将爱车移出充电区域</strong>，避免影响后续车辆充电。
+                                    </li>
+                                    <li>
+                                        停车时，请注意停放位置，避免与其他车辆碰撞、剐蹭；并请<strong>避免阻挡其他车辆的通行</strong>。
+                                    </li>
+                                </ol>
+                            </template>
+                        </van-cell>
+                    </van-cell-group>
+                    <van-cell-group inset>
+                        <van-cell title="项目声明" center>
+                            <template #label >
+                                <ol style="padding-left: 1em;list-style: auto;">
+                                    <li>
+                                        数据来源爬取的官方接口，本项目不对数据准确性和完整性负责。在特定情况下，数据可能存在延迟、错误或不完整的情况，使用者需自行判断并采取行动。
+                                    </li>
+                                    <li>
+                                        数据由脚本爬取，如对官方造成任何影响，项目将无限期关停。
+                                    </li>
+                                    <li>
+                                        所得数据仅用于展示和信息传递目的，本项目不对数据做任何商业化处理，不提供数据接口服务。
+                                    </li>
+                                    <li>
+                                        涉及的 <code>Cookies</code> 及 <code>localStorage</code>（本地储存信息）仅用于展示目的（如显示模式、充电桩位置等），本项目不收集任何个人隐私或数据。
+                                    </li>
+                                    <li>
+                                        本项目有权在用户不知情的情况下作出任何修改，包括但不限于更改域名、关闭服务等。
+                                    </li>
+                                </ol>
+                            </template>
+                        </van-cell>
+                    </van-cell-group>
+                    <van-cell-group inset>
+                        <van-cell title="其他声明" center>
+                            <template #label >
+                                <ol style="padding-left: 1em;list-style: auto;">
+                                    <li>
+                                        倒计时数据仅由开始充电时间与购买充电时长计算得出，仅供参考，受充电进度、人为因素等影响，可能与实际情况不符。
+                                    </li>
+                                    <li>
+                                        受海外服务器及虚拟主机限制等影响，数据获取可能较慢，后续可能会迁移到国内服务器，如有需求可前往 <code>Github</code> 获取源码自行搭建。
+                                    </li>
+                                    <li>
+                                        项目对官方接口访问量较大，过多搭建可能导致官方服务器压力过大。
+                                    </li>
+                                    <li>
+                                        <code>PHP</code> 是世界上最好的编程语言。
+                                    </li>
+                                </ol>
+                            </template>
+                        </van-cell>
+                    </van-cell-group>
+                    <van-cell-group inset>
+                        <van-cell title="项目搭建" center>
+                            <template #label >
+                                <ol style="padding-left: 1em;list-style: auto;">
+                                    <li>
+                                        目前搭建于 <code>InfinityFree</code> 提供的免费虚拟主机上。
+                                    </li>
+                                    <li>
+                                        目前由 <code>华为云函数工作流服务</code> 托管数据更新任务。
+                                    </li>
+                                    <li>
+                                        目前使用 <code>db4free.net</code> 提供的免费 MySQL 数据库。
+                                    </li>
+                                </ol>
+                            </template>
+                        </van-cell>
+                    </van-cell-group>
+                </div>
+            </van-tab>
+            <van-tab title="Q & A" name="qa">
+                <div id="qa" class="mdui-prose">
+                    <van-collapse v-model="qaActiveName">
+                        <van-collapse-item title="Q1 数据来源？准确吗？" name="1" style="font-weight: bold;">
+                            <div class="qa-item">
+                                <p>
+                                    数据来源为爬取的官方接口<br>
+                                    <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">url: https://h5.2ye.cn/api/chargerlog/power</mdui-chip><br>
+                                    <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">method: POST</mdui-chip><br>
+                                    <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">query: seepower_pid</mdui-chip><br>
+                                    由于接口返回的数据只精确到分钟，所以倒计时可能存在1分钟的误差。
+                                </p>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="Q2 数据是实时的吗？" name="2" style="font-weight: bold;">
+                            <div class="qa-item">
+                                <p>
+                                    受限于免费服务资源，结合各时间段可能的用量，数据更新频率为：<br>
+                                    <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">00:00 - 05:59 : 5 min</mdui-chip><br>
+                                    <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">06:00 - 06:59 : 3 min</mdui-chip><br>
+                                    <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">07:00 - 22:59 : 1 min</mdui-chip><br>
+                                    <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">23:00 - 23:59 : 3 min</mdui-chip><br>
+                                    我们尽量保证数据更新的稳定性，但可能受限于服务器，部分时候可能缺少更新数据。
+                                </p>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="Q3 为什么有时候网站无法访问？" name="3" style="font-weight: bold;">
+                            <div class="qa-item">
+                                <p>
+                                    该项目日常维护时间为23:00 - 6:00， 该时间段内可能出现停机或维护状态导致无法访问。<br>
+                                    其余时段如遇不能访问，可能是临时故障，如长期无法使用，请反馈问题。<br>
+                                    我们尽量保证服务的可用性。
+                                </p>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="Q4 NXU Charge 由谁维护？" name="4" style="font-weight: bold;">
+                            <div class="qa-item">
+                                <p>
+                                    目前暂由 <strong>H</strong> 个人维护，已在github上开源<br>
+                                    如您有更好的意见和建议，欢迎提交<code>issue</code>
+                                </p>
+                            </div>
+                        </van-collapse-item>
+                    </van-collapse>
+                </div>
+            </van-tab>
+            <van-tab title="更新日志" name="update">
+                <div id="update" class="mdui-prose">
+                    <van-collapse v-model="updateActiveName" accordion>
+                        <van-collapse-item title="V 1.1.0" label="(2023-12-13)" name="13" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>关于我们 - 其他声明</li>
+                                        <li>关于我们 - 校园内用车倡议</li>
+                                        <li>公告栏</li>
+                                        <li>Github 跳转图标</li>
+                                    </ol>
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>Github 跳转的位置</li>
+                                    </ol>
+                                    <van-tag type="success">修复</van-tag>
+                                    <ol>
+                                        <li>数据更新异常中断的问题</li>
+                                        <li>空闲充电桩显示异常的问题</li>
+                                    </ol>
+                                    <van-tag type="danger">注意</van-tag>
+                                    <ol>
+                                        <li>由于更新了数据返回逻辑，国外服务器对国内接口访问延迟，导致数据获取较慢，敬请谅解</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="V 1.0.4" label="(2023-12-09)" name="12" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>关于我们 - 项目声明</li>
+                                        <li>关于我们 - 项目搭建</li>
+                                        <li>一些常见问题</li>
+                                    </ol>
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>数据更新逻辑</li>
+                                    </ol>
+                                    <van-tag type="danger">注意</van-tag>
+                                    <ol>
+                                        <li>更改服务器及搭建方式</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="V 1.0.2" label="(2023-11-24)" name="11" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>致谢名单</li>
+                                    </ol>
+                                    <van-tag type="success">修复</van-tag>
+                                    <ol>
+                                        <li>时间计算的时区错误</li>
+                                        <li>数据更新时数据库的锁定问题</li>
+                                    </ol>
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>部分显示组件</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item class="cell-blue" title="V 1.0.0" label="(2023-11-22)" name="10" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">重构</van-tag>
+                                    <ol>
+                                        <li>web端</li>
+                                        <ul>
+                                            <li>使用Vue 3框架</li>
+                                            <li>使用Vant 4及MDUI组件库</li>
+                                            <li>更改渲染逻辑</li>
+                                            <li>更改配色方案</li>
+                                            <li>新增充电剩余时间</li>
+                                            <li>新增下拉刷新</li>
+                                            <li>优化页面布局，部分组件</li>
+                                        </ul>
+                                        <li>服务端</li>
+                                        <ul>
+                                            <li>更换api接口，以提供剩余时间支持，同时防止token失效的问题</li>
+                                            <li>更改数据库数据储存结构</li>
+                                            <li>更改接口返回数据json结构</li>
+                                        </ul>
+                                    </ol>
+                                    <van-tag type="danger">注意</van-tag>
+                                    <ol>
+                                        <li>未适配PC端</li>
+                                        <li>受限于服务器，可能并不稳定</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="V 0.3.2" label="(2023-8-31)" name="9" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>充电桩间的分隔线</li>
+                                    </ol>
+                                    <van-tag type="success">修复</van-tag>
+                                    <ol>
+                                        <li>C区8号公寓楼下86062776号充电桩数据错误的问题</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="V 0.3.1" label="(2023-8-27)" name="8" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>数据更新时间</li>
+                                    </ol>
+                                    <van-tag type="danger">注意</van-tag>
+                                    <ol>
+                                        <li>更改服务器及搭建方式，可能影响稳定性</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="V 0.3.0" label="(2023-4-15)" name="7" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>C区8号公寓楼下充电桩数据</li>
+                                    </ol>
+                                    <van-tag type="success">修复</van-tag>
+                                    <ol>
+                                        <li>C区8号公寓楼下充电桩显示问题</li>
+                                    </ol>
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>更改充电桩切换逻辑，由刷新切换改为无刷新切换</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="V 0.2.6" label="(2023-4-5)" name="6" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>菜单</li>
+                                        <li>B区10号楼充电桩数据</li>
+                                    </ol>
+                                    <van-tag type="success">修复</van-tag>
+                                    <ol>
+                                        <li>端口显示问题</li>
+                                        <li>更新日志</li>
+                                    </ol>
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>阻止Edge自动翻译</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="V 0.2.4" label="(2023-4-2)" name="5" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>方向切换</li>
+                                        <li>A区2号公寓楼前充电桩数据</li>
+                                    </ol>
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>部分布局</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="V 0.2.0" label="(2023-3-31)" name="4" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>夜间模式</li>
+                                    </ol>
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>移动端适配，PC端采用水平滑动，移动端采用竖直滑动</li>
+                                        <li>优化只显示空闲模式，移除了没有空闲端口的充电桩</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="V 0.1.0" label="(2023-3-25)" name="3" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>顶部导航栏和底栏</li>
+                                        <li>问题反馈</li>
+                                        <li>更新日志</li>
+                                    </ol>
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>新增版本号，用于css文件缓存刷新</li>
+                                        <li>优化部分组件显示逻辑，为新增其他位置充电桩做准备</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="V 0.0.2" label="(2023-3-24)" name="2" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>背景位置说明</li>
+                                        <li>只显示空闲与显示全部切换</li>
+                                    </ol>
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>布局定位</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="V 0.0.1" label="(2023-3-22)" name="1" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>获取设备端口状态</li>
+                                        <li>基础页面</li>
+                                        <li>C区14号楼前充电桩数据</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                    </van-collapse>
+                </div>
+            </van-tab>
+            <van-tab title="致谢名单" name="thanks">
+                <div id="about">
+                    <p class="item-title" style="padding-top: 20px;">特别鸣谢</p>
+                    <van-cell-group inset>
+                        <van-cell id="MDUIthanks" title="三千許." label="王总非让我加的" center>
+                            <template #icon >
+                                <van-image
+                                    round
+                                    width="36px"
+                                    height="36px"
+                                    lazy-load
+                                    :src="head_w"
+                                    style="margin-right: 10px;"
+                                ></van-image>
+                            </template>
+                        </van-cell>
+                    </van-cell-group>
+                    <p class="item-title">项目支持</p>
+                    <van-cell-group inset>
+                        <van-cell title="Vue" label="一款用于构建用户界面的 JavaScript 框架" url="https://cn.vuejs.org/" center is-link>
+                            <template #icon>
+                                <svg style="margin-right: 10px;" class="logo" viewBox="0 0 128 128" width="24" height="24" data-v-35dc6318="">
+                                    <path fill="#42b883" d="M78.8,10L64,35.4L49.2,10H0l64,110l64-110C128,10,78.8,10,78.8,10z" data-v-35dc6318=""></path><path fill="#35495e" d="M78.8,10L64,35.4L49.2,10H25.6L64,76l38.4-66H78.8z" data-v-35dc6318=""></path>
+                                </svg>
+                            </template>
+                        </van-cell>
+                        <van-cell title="Vant" label="一个轻量、可定制的移动端组件库" url="https://vant-ui.github.io/vant/#/zh-CN" center is-link>
+                            <template #icon>
+                                <img style="margin-right: 10px;width: 24px;" src="https://fastly.jsdelivr.net/npm/@vant/assets/logo.png" />
+                            </template>
+                        </van-cell>
+                        <van-cell title="MDUI" label="使用 Web Components 实现，遵循 Material You 设计规范的 Web 前端组件库" url="https://www.mdui.org/" center is-link>
+                            <template #icon>
+                                <img style="margin-right: 10px;width: 24px;" src="https://cdn.w3cbus.com/mdui/icon-192.png" />
+                            </template>
+                        </van-cell>
+                        <van-cell title="InfinityFree" label="InfinityFree is an independent free hosting initiative, dedicated to providing reliable free hosting services." url="https://www.infinityfree.com/" center is-link>
+                            <template #icon>
+                                <img style="margin-right: 10px;width: 24px;" src="https://www.infinityfree.com/images/logo-purple.png" />
+                            </template>
+                        </van-cell>
+                        <van-cell title="db4free.net" label="免费的 MySQL 数据库" url="https://db4free.net/" center is-link>
+                            <template #icon>
+                                <img style="margin-right: 10px;width: 24px;" src="https://db4free.net/images/favicon.png" />
+                            </template>
+                        </van-cell>
+                        <van-cell title="华为云" label="共建智能世界云底座" url="https://www.huaweicloud.com/" center is-link>
+                            <template #icon>
+                                <svg style="margin-right: 10px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24"><defs><radialGradient cx="153.93%" cy="-8.441%" fx="153.93%" fy="-8.441%" r="196.379%" gradientTransform="matrix(1 0 0 .80603 0 -.016)" id="b"><stop stop-color="#F6BEA3" offset="0%"/><stop stop-color="#F4A691" offset="5.28%"/><stop stop-color="#E50012" offset="42.7%"/><stop stop-color="#E30011" offset="68.62%"/><stop stop-color="#DC0010" offset="79.02%"/><stop stop-color="#D0000D" offset="86.64%"/><stop stop-color="#BE0008" offset="92.9%"/><stop stop-color="#A80002" offset="98.27%"/><stop stop-color="#9F0000" offset="100%"/></radialGradient><radialGradient cx="172.897%" cy="-478.756%" fx="172.897%" fy="-478.756%" r="623.413%" gradientTransform="matrix(.37112 0 0 1 1.087 0)" id="e"><stop stop-color="#F6BEA3" offset="0%"/><stop stop-color="#F4A691" offset="5.28%"/><stop stop-color="#E50012" offset="42.7%"/><stop stop-color="#E30011" offset="68.62%"/><stop stop-color="#DC0010" offset="79.02%"/><stop stop-color="#D0000D" offset="86.64%"/><stop stop-color="#BE0008" offset="92.9%"/><stop stop-color="#A80002" offset="98.27%"/><stop stop-color="#9F0000" offset="100%"/></radialGradient><radialGradient cx="152.575%" cy="-124.058%" fx="152.575%" fy="-124.058%" r="303.899%" gradientTransform="matrix(.56165 0 0 1 .669 0)" id="h"><stop stop-color="#F6BEA3" offset="0%"/><stop stop-color="#F4A691" offset="5.28%"/><stop stop-color="#E50012" offset="42.7%"/><stop stop-color="#E30011" offset="68.62%"/><stop stop-color="#DC0010" offset="79.02%"/><stop stop-color="#D0000D" offset="86.64%"/><stop stop-color="#BE0008" offset="92.9%"/><stop stop-color="#A80002" offset="98.27%"/><stop stop-color="#9F0000" offset="100%"/></radialGradient><radialGradient cx="144.155%" cy="16.675%" fx="144.155%" fy="16.675%" r="282.492%" gradientTransform="matrix(1 0 0 .455 0 .09)" id="k"><stop stop-color="#F6BEA3" offset="0%"/><stop stop-color="#F4A691" offset="5.28%"/><stop stop-color="#E50012" offset="42.7%"/><stop stop-color="#E30011" offset="68.62%"/><stop stop-color="#DC0010" offset="79.02%"/><stop stop-color="#D0000D" offset="86.64%"/><stop stop-color="#BE0008" offset="92.9%"/><stop stop-color="#A80002" offset="98.27%"/><stop stop-color="#9F0000" offset="100%"/></radialGradient><radialGradient cx="58.198%" cy="16.266%" fx="58.198%" fy="16.266%" r="282.924%" gradientTransform="matrix(1 0 0 .45414 0 .089)" id="n"><stop stop-color="#F6BEA3" offset="0%"/><stop stop-color="#F4A691" offset="5.28%"/><stop stop-color="#E50012" offset="42.7%"/><stop stop-color="#E30011" offset="68.62%"/><stop stop-color="#DC0010" offset="79.02%"/><stop stop-color="#D0000D" offset="86.64%"/><stop stop-color="#BE0008" offset="92.9%"/><stop stop-color="#A80002" offset="98.27%"/><stop stop-color="#9F0000" offset="100%"/></radialGradient><radialGradient cx="10.722%" cy="-430.752%" fx="10.722%" fy="-430.752%" r="561.434%" gradientTransform="matrix(.4129 0 0 1 .063 0)" id="q"><stop stop-color="#F6BEA3" offset="0%"/><stop stop-color="#F4A691" offset="5.28%"/><stop stop-color="#E50012" offset="42.7%"/><stop stop-color="#E30011" offset="68.62%"/><stop stop-color="#DC0010" offset="79.02%"/><stop stop-color="#D0000D" offset="86.64%"/><stop stop-color="#BE0008" offset="92.9%"/><stop stop-color="#A80002" offset="98.27%"/><stop stop-color="#9F0000" offset="100%"/></radialGradient><radialGradient cx="8.979%" cy="-124.489%" fx="8.979%" fy="-124.489%" r="304.252%" gradientTransform="matrix(.56268 0 0 1 .04 0)" id="t"><stop stop-color="#F6BEA3" offset="0%"/><stop stop-color="#F4A691" offset="5.28%"/><stop stop-color="#E50012" offset="42.7%"/><stop stop-color="#E30011" offset="68.62%"/><stop stop-color="#DC0010" offset="79.02%"/><stop stop-color="#D0000D" offset="86.64%"/><stop stop-color="#BE0008" offset="92.9%"/><stop stop-color="#A80002" offset="98.27%"/><stop stop-color="#9F0000" offset="100%"/></radialGradient><radialGradient cx="17.214%" cy="-8.92%" fx="17.214%" fy="-8.92%" r="197.382%" gradientTransform="matrix(1 0 0 .80406 0 -.017)" id="w"><stop stop-color="#F6BEA3" offset="0%"/><stop stop-color="#F4A691" offset="5.28%"/><stop stop-color="#E50012" offset="42.7%"/><stop stop-color="#E30011" offset="68.62%"/><stop stop-color="#DC0010" offset="79.02%"/><stop stop-color="#D0000D" offset="86.64%"/><stop stop-color="#BE0008" offset="92.9%"/><stop stop-color="#A80002" offset="98.27%"/><stop stop-color="#9F0000" offset="100%"/></radialGradient><path d="M.007 3.41C.075 4.7 1.05 5.466 1.05 5.466c1.571 1.525 5.376 3.45 6.26 3.888.012.004.058.019.085-.015 0 0 .037-.029.017-.077h.001C4.993 3.994 1.68 0 1.68 0S-.122 1.703.007 3.41" id="a"/><path d="M0 .22c.687 1.22 1.844 2.167 3.05 1.876C3.88 1.89 5.764.581 6.385.138L6.385.137c.048-.043.03-.079.03-.079-.015-.056-.08-.056-.08-.056V0L0 .22z" id="d"/><path d="M.352 2.73C1.038 4.175 2.35 4.613 2.35 4.613a3.883 3.883 0 001.212.265c.095.017 3.767.002 4.751-.003.042 0 .065-.042.065-.042.03-.05-.024-.094-.024-.094v-.001C5.574 2.869.182 0 .182 0c-.49 1.512.17 2.73.17 2.73" id="g"/><path d="M2.207.193C.53.625.134 2.14.134 2.14c-.306.954.008 2.001.008 2.001.56 2.474 3.314 6.539 3.906 7.392.042.042.075.027.075.027.064-.018.06-.079.06-.079C5.095 2.407 3.227 0 3.227 0c-.276.024-1.02.193-1.02.193" id="j"/><path d="M.25 11.488h.001c.007.057.048.07.048.07.062.023.092-.035.092-.035h.001C1 10.648 3.738 6.605 4.295 4.141c0 0 .302-1.193.01-2 0 0-.413-1.54-2.093-1.947 0 0-.484-.122-.997-.194 0 0-1.877 2.407-.965 11.488" id="m"/><path d="M.074.002S.018.009.002.05c0 0-.013.056.025.085H.026C.632.57 2.47 1.85 3.356 2.098c0 0 1.638.556 3.06-1.878L.074 0v.002z" id="p"/><path d="M.036 4.748s-.05.033-.032.092c0 0 .026.048.065.048.996.002 4.77.006 4.865-.011 0 0 .487-.02 1.09-.25 0 0 1.342-.425 2.04-1.943 0 0 .62-1.238.14-2.684 0 0-5.384 2.878-8.168 4.748" id="s"/><path d="M.007 9.239H.01s-.029.06.017.1c0 0 .044.032.086.006.907-.448 4.683-2.362 6.247-3.88 0 0 .99-.792 1.043-2.063C7.516 1.635 5.73 0 5.73 0S2.428 3.982.007 9.239" id="v"/></defs><g fill="none" fill-rule="evenodd"><path d="M0 0h21v21H0z"/><path fill="#231815" fill-rule="nonzero" d="M2.517 18.882H.93v-1.397H.227v3.463H.93v-1.406h1.587v1.406h.703v-3.463h-.703zM6.476 19.467c0 .563-.28.864-.788.864-.51 0-.791-.31-.791-.888v-1.956h-.703v1.98c0 .974.541 1.533 1.485 1.533.953 0 1.5-.569 1.5-1.562v-1.953h-.704v1.982zM14.597 19.866l-.786-2.382h-.574l-.786 2.382-.765-2.38h-.748l1.207 3.462h.582l.787-2.274.788 2.274h.587l1.204-3.462h-.729zM17.352 19.458h1.279v-.631h-1.279v-.709h1.856v-.63h-2.549v3.458h2.616v-.63h-1.923zM20.113 17.485h1v3.459h-1zM10.152 20.225l.311.721h.737l-1.512-3.441-.013-.02H9.06l-1.526 3.461h.718l.294-.67.021-.05h1.585zm-.794-1.864l.501 1.16h-.002l.034.08H8.829l.033-.08.496-1.16z"/><g transform="translate(1.669 2.724)"><mask id="c" fill="#fff"><use xlink:href="#a"/></mask><path fill="url(#b)" fill-rule="nonzero" mask="url(#c)" d="M-.122 0h7.555v9.373H-.122z"/></g><g transform="translate(2.061 13.31)"><mask id="f" fill="#fff"><use xlink:href="#d"/></mask><path fill="url(#e)" fill-rule="nonzero" mask="url(#f)" d="M0 0h6.432v2.387H0z"/></g><g transform="translate(.194 7.968)"><mask id="i" fill="#fff"><use xlink:href="#g"/></mask><path fill="url(#h)" fill-rule="nonzero" mask="url(#i)" d="M-.309 0h8.718v4.896H-.309z"/></g><g transform="translate(5.766)"><mask id="l" fill="#fff"><use xlink:href="#j"/></mask><path fill="url(#k)" fill-rule="nonzero" mask="url(#l)" d="M-.172 0h5.267v11.575H-.172z"/></g><g transform="translate(10.79)"><mask id="o" fill="#fff"><use xlink:href="#m"/></mask><path fill="url(#n)" fill-rule="nonzero" mask="url(#o)" d="M-.662 0h5.26v11.581h-5.26z"/></g><g transform="translate(12.516 13.313)"><mask id="r" fill="#fff"><use xlink:href="#p"/></mask><path fill="url(#q)" fill-rule="nonzero" mask="url(#r)" d="M-.011 0h6.427v2.654H-.011z"/></g><g transform="translate(12.414 7.955)"><mask id="u" fill="#fff"><use xlink:href="#s"/></mask><path fill="url(#t)" fill-rule="nonzero" mask="url(#u)" d="M-.014 0h8.698v4.894H-.014z"/></g><g transform="translate(11.914 2.724)"><mask id="x" fill="#fff"><use xlink:href="#v"/></mask><path fill="url(#w)" fill-rule="nonzero" mask="url(#x)" d="M-.02 0h7.535v9.371H-.02z"/></g></g></svg>
+                            </template>
+                        </van-cell>
+                        <van-cell title="ChatGPT" label="ChatGPT is a sibling model to InstructGPT, which is trained to follow an instruction in a prompt and provide a detailed response." url="https://chat.openai.com/" center is-link>
+                            <template #icon>
+                                <img style="margin-right: 10px;width: 24px;" src="https://cdn.oaistatic.com/_next/static/media/favicon-32x32.be48395e.png" />
+                            </template>
+                        </van-cell>
+                    </van-cell-group>
+                </div>
+            </van-tab>
+        </van-tabs>
+    </div>
+</body>
+</html>
