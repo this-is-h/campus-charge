@@ -80,7 +80,7 @@ function getData() {
     // return; // 本地调试用
     pile_data_loading.value = true;
     var xhr = createXHR();
-    xhr.open("GET", "get-data.php?pile=" + nowLocate.value);
+    xhr.open("GET", "http://nxu.free.nf/charge/get-data.php?pile=" + nowLocate.value);
     xhr.send();
     xhr.onload = function () {
         if (xhr.readyState === 4) {
