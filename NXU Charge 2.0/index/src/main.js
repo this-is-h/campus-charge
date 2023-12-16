@@ -85,7 +85,7 @@ function getData() {
     xhr.onload = function () {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-                var result_array;
+                let result_array;
                 try {
                     result_array = JSON.parse(xhr.responseText);
                     if (result_array["code"] == 200 && result_array["success"] == true) {
@@ -113,11 +113,12 @@ function getData() {
 }
 
 function dataProcessing(data) {
-    // console.log(data)
+    console.log(data)
     pile_array.value = pileArrayTotal[nowLocate.value];
+    console.log(pile_array)
     var pile_result = [];
     for (let i = 0; i < pile_array.value.length; i++) {
-        pile_result.push([pile_array[i],[],[]])
+        pile_result.push([pile_array.value[i],[],[]])
         for (let j = 0; j < 10; j++) {
             if (j < 5) {
                 pile_result[i][1].push(getSecondsDifference(data.data[pile_array.value[i]][j]));
@@ -138,7 +139,7 @@ function dataProcessing(data) {
     // 构建格式化后的时间字符串
     const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-    console.log(pile_result)
+    console.log(pile_result);
     successText.value = "刷新成功 " + formattedTime;
     pile_data.value = pile_result;
     pile_data_loading.value = false;
@@ -196,7 +197,7 @@ const pileArrayTotal = {
     "c13": ["88232174","88232175","88232073","88232172"],
     "c8-1": ["88230686", "88230816", "88230815", "88230812", "88230810", "88230704", "88230805", "88230461", "88230807", "88230806"]
 };
-const pile_array = reactive(pileArrayTotal[nowLocate.value]);
+const pile_array = ref(pileArrayTotal[nowLocate.value]);
 const pile_data = ref([]);
 // pile_data.value = [true, [["88227929",[1,1,1700544501333,0,0],[0,1,1,0,1700464927000]],["88227923",[1,1,1,0,0],[0,1,1,0,1]],["11111111",[1,1,1,0,0],[0,1,1,0,1]]]];
 
