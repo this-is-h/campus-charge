@@ -257,7 +257,7 @@ while ($token_get && !$finish_loop) {
         }
         foreach ($data['data'] as $index => $pile_data) {
             if ($pile_data['enable'] == 1) {
-                $response['data'][$id][$index] = '1702374170000';
+                $response['data'][$pile][$index] = '1702374170000';
             }
         }
     }
