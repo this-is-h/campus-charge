@@ -97,35 +97,39 @@ function getData() {
                         error.isError = true
                     }
                 } catch(e) {
-                    error.msg = "data"
-                    error.isError = true
+                    error.msg = "data";
+                    error.isError = true;
                     console.error("Error：" + e);
                 }
             } else {
-                error.msg = "data"
-                error.isError = true
+                error.msg = "data";
+                error.isError = true;
             }
         } else {
-            error.msg = "data"
-            error.isError = true
+            error.msg = "data";
+            error.isError = true;
         }
     }
 }
 
 function dataProcessing(data) {
-    console.log(data)
+    // console.log(data)
     pile_array.value = pileArrayTotal[nowLocate.value];
-    console.log(pile_array)
+    // console.log(pile_array)
     var pile_result = [];
-    for (let i = 0; i < pile_array.value.length; i++) {
-        pile_result.push([pile_array.value[i],[],[]])
-        for (let j = 0; j < 10; j++) {
-            if (j < 5) {
-                pile_result[i][1].push(getSecondsDifference(data.data[pile_array.value[i]][j]));
-            } else {
-                pile_result[i][2].push(getSecondsDifference(data.data[pile_array.value[i]][j]));
+    try {
+        for (let i = 0; i < pile_array.value.length; i++) {
+            pile_result.push([pile_array.value[i],[],[]])
+            for (let j = 0; j < 10; j++) {
+                if (j < 5) {
+                    pile_result[i][1].push(getSecondsDifference(data.data[pile_array.value[i]][j]));
+                } else {
+                    pile_result[i][2].push(getSecondsDifference(data.data[pile_array.value[i]][j]));
+                }
             }
         }
+    } catch(e) {
+        return;
     }
     const timestamp = parseInt(data.timestamp); // 将字符串转换为数字
     const date = new Date(timestamp); // 使用 Date 对象转换时间戳
@@ -139,14 +143,14 @@ function dataProcessing(data) {
     // 构建格式化后的时间字符串
     const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-    console.log(pile_result);
+    // console.log(pile_result);
     successText.value = "刷新成功 " + formattedTime;
     pile_data.value = pile_result;
     pile_data_loading.value = false;
     loading.value = false;
 }
 
-const version = "1.1.0";
+const version = "1.1.2";
 const lightToDarkVar = ref(true);
 const lightToDarkContent = ref("light");
 if (!window.matchMedia || !window.matchMedia('(prefers-color-scheme: dark)') || !window.matchMedia('(prefers-color-scheme: dark)').addEventListener) {
