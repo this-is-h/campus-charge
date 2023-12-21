@@ -1,4 +1,5 @@
 <?php
+require('./secret.php');
 $dataMap = array(
     "c14" =>   array("88227178", "88227167", "88227166", "88227164", "89627130", "89627062", "89627114", "89627112", "89627111", "89624194", "89627126", "89627113"),
 	"a2" =>    array("88227927", "88227928", "88227165"),
@@ -104,10 +105,10 @@ $dataArray = array(
 //     return;
 // }
 
-$servername = "your server name";
-$username = "your username";
-$password = "your password";
-$connname = "your con name";
+$servername = $Secret['mysql.server'];
+$username = $Secret['mysql.username'];
+$password = $Secret['mysql.password'];
+$connname = $Secret['mysql.dbname'];
 
 // 创建连接
 $conn = new mysqli($servername, $username, $password, $connname);

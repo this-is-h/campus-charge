@@ -1,7 +1,8 @@
 <?php
+require('./secret.php');
 // 设定时区为中国
 date_default_timezone_set('Asia/Shanghai');
-function data($number, $token) {
+function data($number, $token, $Secret) {
     // 服务器禁止使用
     // global $token;
     $url = "https://h5.2ye.cn/api/charger/port?productid=" . $number;
@@ -11,7 +12,7 @@ function data($number, $token) {
         'Content-Length: 0',
         'tls: ' . floor(microtime(true) * 1000), // Unix timestamp in milliseconds
         'Accept: application/json, text/plain, */*',
-        'clientid: your clientid', //自行从官方接口爬取 clientid
+        'clientid: ' . $Secret['clientid'], //自行从官方接口爬取 clientid
         'token: ' .  $token,
         'User-Agent: Mozilla/5.0 (Linux; Android 12; ELS-AN00 Build/HUAWEIELS-AN00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4435 MMWEBSDK/20230202 Mobile Safari/537.36 MMWEBID/9699 MicroMessenger/8.0.33.2320(0x28002151) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64',
         'Origin: https://h5.2ye.cn',
@@ -143,10 +144,10 @@ $dataArray = array(
 //     return;
 // }
 
-$servername = "your server name";
-$username = "your username";
-$password = "your password";
-$connname = "your con name";
+$servername = $Secret['mysql.server'];
+$username = $Secret['mysql.username'];
+$password = $Secret['mysql.password'];
+$connname = $Secret['mysql.dbname'];
 
 // 创建连接
 $conn = new mysqli($servername, $username, $password, $connname);
@@ -231,7 +232,7 @@ while ($token_get && !$finish_loop) {
         break;
     } else {
         foreach ($locate as $pile) {
-            $ch_now = data($pile, $token);
+            $ch_now = data($pile, $token, $Secret);
             $curlHandles[$pile] = $ch_now;
             curl_multi_add_handle($multiHandle, $ch_now);
         }
@@ -255,7 +256,7 @@ while ($token_get && !$finish_loop) {
             curl_multi_remove_handle($multiHandle, $ch);
             curl_close($ch);
             // 重新创建句柄并添加到多句柄中
-            $newCh = data($id, $token); // 使用相同的 URL 重新创建句柄
+            $newCh = data($id, $token, $Secret); // 使用相同的 URL 重新创建句柄
             $curlHandles[$id] = $newCh;
             curl_multi_add_handle($multiHandle, $newCh);
             continue;
