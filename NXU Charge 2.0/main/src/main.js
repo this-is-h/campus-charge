@@ -85,7 +85,7 @@ const navbar = createApp({
     setup() {
         const onClickLeft = () => {
             // location.href = document.referrer;
-            location.href = '//nxu.free.nf/charge'
+            location.href = "http://" + location.host + '/charge/'
         };
         const onClickRight = () => {
             window.open('https://github.com/this-is-h/nxu-charge', '_blank')
