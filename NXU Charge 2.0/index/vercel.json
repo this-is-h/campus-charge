@@ -1,5 +1,19 @@
 {
+    "version": 2,
     "routes": [
-        { "src": "/charge/(.*)", "dest": "/$1" }
+    {
+        "src": "/charge/(index.html)?",
+        "dest": "/dist/index.html",
+        "methods": ["GET"]
+    },
+    {
+        "src": "/charge/static/(.*)",
+        "dest": "/dist/static/$1",
+        "methods": ["GET"]
+    },
+    {
+        "src": "/([^\/]*)",
+        "status": 403
+    }
     ]
 }
