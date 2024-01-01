@@ -90,23 +90,32 @@ function getData() {
                     result_array = JSON.parse(xhr.responseText);
                     if (result_array["code"] == 200 && result_array["success"] == true) {
                         console.log(result_array);
+                        if (result_array["warning"] == true && result_array["warning_msg"] == 'token过期') {
+                            error.msg = "token";
+                            error.type = "non-refresh";
+                            error.isError = true;
+                        }
                         dataProcessing(result_array);
                     } else {
-                        error.msg = "data-custom"
-                        error.content = result_array["msg"]
-                        error.isError = true
+                        error.msg = "data-custom";
+                        error.content = result_array["msg"];
+                        error.type = "normal";
+                        error.isError = true;
                     }
                 } catch(e) {
                     error.msg = "data";
                     error.isError = true;
+                    error.type = "normal";
                     console.error("Error：" + e);
                 }
             } else {
                 error.msg = "data";
+                error.type = "normal";
                 error.isError = true;
             }
         } else {
             error.msg = "data";
+            error.type = "normal";
             error.isError = true;
         }
     }
@@ -150,7 +159,7 @@ function dataProcessing(data) {
     loading.value = false;
 }
 
-const version = "1.1.2";
+const version = "1.1.4";
 const lightToDarkVar = ref(true);
 const lightToDarkContent = ref("light");
 if (!window.matchMedia || !window.matchMedia('(prefers-color-scheme: dark)') || !window.matchMedia('(prefers-color-scheme: dark)').addEventListener) {
@@ -212,13 +221,17 @@ const loading = ref(false);
 const pile_data_loading = ref(true);
 const successText = ref("刷新成功");
 
-const error = reactive({isError: false, msg: ""});
+const error = reactive({isError: false, msg: "", type: "normal"});
 watch(error, (newError) => {
-    if (newError.isError) {
-        const error_array = {
-            "data": ["数据出错", "获取数据发生错误\n若多次刷新仍出现该错误\n请与开发者联系"],
-            "data-custom": ["数据出错", newError.content]
-        }
+    if (!newError.isError) {
+        return;
+    }
+    const error_array = {
+        "data": ["数据出错", "获取数据发生错误\n若多次刷新仍出现该错误\n请与开发者联系"],
+        "data-custom": ["数据出错", newError.content],
+        "token": ["更新数据出现问题", "当前服务器使用的token已失效\n这会导致部分空闲充电桩错误显示为正在使用\n开发者会不定期检查token的可用性，但可能目前尚未发现该问题\n你可以反馈问题\n或者忽略这个问题继续使用"],
+    }
+    if (newError.type == "normal") {
         showConfirmDialog({
             title: error_array[error.msg][0],
             message: error_array[error.msg][1],
@@ -228,6 +241,18 @@ watch(error, (newError) => {
             closeOnPopstate: false
         }).then(() => {
             location.reload();
+        }).catch(() => {
+            location.href = "https://support.qq.com/product/533385";
+        });
+    } else if (newError.type == "non-refresh") {
+        showConfirmDialog({
+            title: error_array[error.msg][0],
+            message: error_array[error.msg][1],
+            confirmButtonText: '继续',
+            cancelButtonText: '反馈问题',
+            width: "80%",
+            closeOnPopstate: false
+        }).then(() => {
         }).catch(() => {
             location.href = "https://support.qq.com/product/533385";
         });

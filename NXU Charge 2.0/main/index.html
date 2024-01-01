@@ -246,6 +246,25 @@
             <van-tab title="更新日志" name="update">
                 <div id="update" class="mdui-prose">
                     <van-collapse v-model="updateActiveName" accordion>
+                        <van-collapse-item title="V 1.1.4" label="(2023-12-31)" name="15" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    2023年的最后一次更新啦，在这里祝大家元旦快乐喽🎆🎆<br><br>
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>token 失效时的提示弹窗</li>
+                                    </ol>
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>将 mdui 图标使用本地路径</li>
+                                    </ol>
+                                    <van-tag type="success">修复</van-tag>
+                                    <ol>
+                                        <li>在获取数据及跳转网页时固定了域名的问题</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
                         <van-collapse-item title="V 1.1.2" label="(2023-12-21)" name="14" style="font-weight: bold;">
                             <div class="update-item">
                                 <ul class="mdui-list">
@@ -538,7 +557,7 @@
                         </van-cell>
                         <van-cell title="MDUI" label="使用 Web Components 实现，遵循 Material You 设计规范的 Web 前端组件库" url="https://www.mdui.org/" center is-link>
                             <template #icon>
-                                <img style="margin-right: 10px;width: 24px;" src="https://cdn.w3cbus.com/mdui/icon-192.png" />
+                                <img style="margin-right: 10px;width: 24px;" src="./mdui.png" />
                             </template>
                         </van-cell>
                         <van-cell title="InfinityFree" label="InfinityFree is an independent free hosting initiative, dedicated to providing reliable free hosting services." url="https://www.infinityfree.com/" center is-link>

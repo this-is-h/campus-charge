@@ -74,10 +74,10 @@ if (localStorage.getItem("theme") != null) {
 }
 if (lightToDarkVar.value) {
     lightToDarkContent.value = "light";
-    setTheme("light")
+    setTheme("light");
 } else {
     lightToDarkContent.value = "dark";
-    setTheme("dark")
+    setTheme("dark");
 }
 // lightToDark()
 
@@ -85,10 +85,10 @@ const navbar = createApp({
     setup() {
         const onClickLeft = () => {
             // location.href = document.referrer;
-            location.href = "http://" + location.host + '/charge/'
+            location.href = "http://" + location.host + '/charge/';
         };
         const onClickRight = () => {
-            window.open('https://github.com/this-is-h/nxu-charge', '_blank')
+            window.open('https://github.com/this-is-h/nxu-charge', '_blank');
         };
         return {
             onClickLeft,
@@ -117,7 +117,7 @@ const main = createApp({
             active.value = option;
         }
         const qaActiveName = ref([]);
-        const updateActiveName = ref('14');
+        const updateActiveName = ref('15');
         return {
             active,
             qaActiveName,

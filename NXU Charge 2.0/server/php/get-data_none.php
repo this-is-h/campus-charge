@@ -166,7 +166,8 @@ $response = array(
     "code" => 200,
     "success" => true,
     "data" => $pile_data,
-    "timestamp" => $timestamp
+    "timestamp" => $timestamp,
+    'warning' => false
 );
 
 $jsonString = json_encode($response);

@@ -174,6 +174,86 @@ if (!array_key_exists($pile, $dataMap)) {
 }
 $locate = $dataMap[$pile];
 
+$response = array(
+    'warning' => false
+);
+
+$sqlStr = sprintf("select `%s` from `data` where id = 1", $pile);
+$rows = $conn->query($sqlStr);
+if ($rows->num_rows > 0) {
+    while($row = $rows->fetch_assoc()) {
+        $pile_time = $row[$pile];
+    }
+} else {
+    // printf("query failed, err:%s\n", $conn->error);
+    die('{"state": 301, "success": false, "error_msg": "数据获取失败"}');
+}
+
+$time_now = round(microtime(true) * 1000);
+if ($time_now - $pile_time > 60000) {
+    $time_now = round(microtime(true) * 1000);
+    $query = "UPDATE `data` SET `$pile` = $time_now WHERE id = 1";
+    if ($conn->query($query) != TRUE) {
+        die('{"state": 301, "success": false, "error_msg": "数据更新失败"}');
+    }
+    
+    $token_get = true;
+    $sql = "SELECT `token` FROM `data` WHERE id = 1";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $token = $row["token"];
+        }
+    } else {
+        $token_get = false;
+        $response['warning'] = true;
+        $response['warning_msg'] = 'token获取错误';
+    }
+    // echo $token . '<br>';
+
+    $finish_loop = false;
+    while ($token_get && !$finish_loop) {
+        // echo $seepower_pid . "<br>";
+        // var_dump($curlHandles);
+        if ($finish_loop && count($locate) == 0) {
+            break;
+        }
+        foreach ($locate as $pile_now) {
+            $response_now = data($pile_now, $token, $Secret);
+            // var_dump($response_now);
+            if (!$response_now[0]) {
+                continue;
+            }
+            unset($locate[$pile_now]);
+            $data = $response_now[1];
+            if ($data['err_msg'] == 'token已失效') {
+                $finish_loop = true;
+                $locate = array();
+                $response['warning'] = true;
+                $response['warning_msg'] = 'token过期';
+                break;
+            }
+            foreach ($data['data'] as $index => $pile_data) {
+                if ($pile_data['enable'] == 1) {
+                    $index_add = $index + 1;
+                    $query = "UPDATE `$pile` SET `$index_add` = '1702374170000' WHERE `id` = '$pile_now'";
+                    // echo $query;
+                    if ($conn->query($query) != TRUE) {
+                        die('{"state": 301, "success": false, "error_msg": "数据更新失败"}');
+                    }
+                }
+            }
+        }
+        $finish_loop = true;
+    }
+
+    $time_now = round(microtime(true) * 1000);
+    $query = "UPDATE `data` SET `$pile` = $time_now WHERE id = 1";
+    if ($conn->query($query) != TRUE) {
+        die('{"state": 301, "success": false, "error_msg": "数据更新失败"}');
+    }
+}
+
 $sqlStr = sprintf("select * from `%s` where id > 0", $pile);
 $rows = $conn->query($sqlStr);
 if (!$rows) {
@@ -213,58 +293,11 @@ if (!$result) {
 $row = $result->fetch_assoc();
 $timestamp = $row['timestamp'];
 
-$response = array(
-    "code" => 200,
-    "success" => true,
-    "data" => $pile_data,
-    "timestamp" => $timestamp,
-    'warning' => false
-);
+$response['code'] = 200;
+$response['success'] = true;
+$response['data'] = $pile_data;
+$response['timestamp'] = $timestamp;
 
-$token_get = true;
-$sql = "SELECT `token` FROM `data` WHERE id = 1";
-$result = $conn->query($sql);
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        $token = $row["token"];
-    }
-} else {
-    $token_get = false;
-    $response['warning'] = true;
-    $response['warning_msg'] = 'token获取错误';
-}
-// echo $token . '<br>';
-
-$finish_loop = false;
-while ($token_get && !$finish_loop) {
-    // echo $seepower_pid . "<br>";
-    // var_dump($curlHandles);
-    if ($finish_loop && count($locate) == 0) {
-        break;
-    }
-    foreach ($locate as $pile) {
-        $response_now = data($pile, $token, $Secret);
-        // var_dump($response_now);
-        if (!$response_now[0]) {
-            continue;
-        }
-        unset($locate[$pile]);
-        $data = $response_now[1];
-        if ($data['err_msg'] == 'token已失效') {
-            $finish_loop = true;
-            $locate = array();
-            $response['warning'] = true;
-            $response['warning_msg'] = 'token过期';
-            break;
-        }
-        foreach ($data['data'] as $index => $pile_data) {
-            if ($pile_data['enable'] == 1) {
-                $response['data'][$pile][$index] = '1702374170000';
-            }
-        }
-    }
-    $finish_loop = true;
-}
 
 $jsonString = json_encode($response);
 if (!$jsonString) {
