@@ -1,5 +1,5 @@
 {
     "routes": [
-        { "src": "/charge/index.html", "dest": "/index.html" }
+        { "src": "/charge/(.*)", "dest": "/$1" }
     ]
 }
