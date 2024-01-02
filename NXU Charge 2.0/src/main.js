@@ -28,6 +28,7 @@ import 'vant/lib/index.css';
 
 import "@/assets/css/main.css";
 import head_w from '@/assets/img/head-w.jpg'
+import { UPDATE_ACTIVE_NAME } from './public.js';
 
 
 function lightToDark() {
@@ -118,6 +119,7 @@ const main = createApp({
         }
         const qaActiveName = ref([]);
         const updateActiveName = ref('15');
+        updateActiveName.value = UPDATE_ACTIVE_NAME;
         return {
             active,
             qaActiveName,
