@@ -81,7 +81,7 @@ function getData() {
     // return; // 本地调试用
     pile_data_loading.value = true;
     var xhr = createXHR();
-    let data_url = 'http://' + location.host + '/charge/api/get-data.php?pile=';
+    let data_url = location.host + '/charge/api/get-data.php?pile=';
     if (DATA_URL != '') {
         data_url = DATA_URL;
     }
