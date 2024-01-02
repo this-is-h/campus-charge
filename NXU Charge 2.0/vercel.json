@@ -6,8 +6,9 @@
             "maxDuration": 10
         }
     },
-    "rewrites": [
+    "redirects": [
         { "source": "/charge/:match*", "destination": "/:match*" },
-        { "source": "/api/:match*", "destination": "/api/php/:match*" }
+        { "source": "/api/:match*", "destination": "/api/php/:match*" },
+        { "source": "/*", "statusCode": "403" }
     ]
 }
