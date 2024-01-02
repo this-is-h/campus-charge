@@ -85,7 +85,7 @@ if (lightToDarkVar.value) {
 const navbar = createApp({
     setup() {
         const onClickLeft = () => {
-            if (document.referrer = '') {
+            if (document.referrer == '') {
                 location.href = '/charge';
             } else {
                 location.href = document.referrer;
