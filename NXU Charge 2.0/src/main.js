@@ -85,8 +85,11 @@ if (lightToDarkVar.value) {
 const navbar = createApp({
     setup() {
         const onClickLeft = () => {
-            // location.href = document.referrer;
-            location.href = "http://" + location.host + '/charge/';
+            if (document.referrer = '') {
+                location.href = '/charge';
+            } else {
+                location.href = document.referrer;
+            }
         };
         const onClickRight = () => {
             window.open('https://github.com/this-is-h/nxu-charge', '_blank');
