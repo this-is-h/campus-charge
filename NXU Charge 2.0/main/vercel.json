@@ -3,7 +3,7 @@
     "routes": [
         {
             "src": "/charge/main/(.*)",
-            "dest": "/$1",
+            "dest": "/dist/$1",
             "methods": ["GET"]
         },
         {
