@@ -1,9 +1,9 @@
 <?php
 $Secret = array(
-    'clientid' => 'your clientid',
-    'mysql.server' => 'your server name',
-    'mysql.username' => 'your username',
-    'mysql.password' => 'your password',
-    'mysql.dbname' => 'your dbname',
+    'clientid' => getenv('CLIENTID'),
+    'mysql.server' => getenv('MYSQL_SERVER'),
+    'mysql.username' => getenv('MYSQL_USERNAME'),
+    'mysql.password' => getenv('MYSQL_PASSWORD'),
+    'mysql.dbname' => getenv('MYSQL_DBNAME'),
 );
 ?>
