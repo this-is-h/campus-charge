@@ -1,0 +1,11 @@
+{
+    "functions": {
+        "api/php/*.php": {
+            "memory": 1024,
+            "maxDuration": 10
+        }
+    },
+    "rewrites": [
+        { "source": "/charge/:match*", "destination": "/:match*" }
+    ]
+}
