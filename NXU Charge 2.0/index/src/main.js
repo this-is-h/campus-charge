@@ -80,7 +80,11 @@ function getData() {
     // return; // 本地调试用
     pile_data_loading.value = true;
     var xhr = createXHR();
-    xhr.open("GET", "http://" + location.host + "/charge/get-data.php?pile=" + nowLocate.value);
+    let data_url = 'http://' + location.host + '/charge/get-data.php?pile=';
+    if (dataUrl != '') {
+        data_url = dataUrl;
+    }
+    xhr.open("GET", data_url + nowLocate.value);
     xhr.send();
     xhr.onload = function () {
         if (xhr.readyState === 4) {
@@ -160,6 +164,8 @@ function dataProcessing(data) {
 }
 
 const version = "1.1.4";
+const dataUrl = ""; // 设置数据源
+
 const lightToDarkVar = ref(true);
 const lightToDarkContent = ref("light");
 if (!window.matchMedia || !window.matchMedia('(prefers-color-scheme: dark)') || !window.matchMedia('(prefers-color-scheme: dark)').addEventListener) {
@@ -295,10 +301,10 @@ const app1 = createApp({
             console.log(action.text)
             switch(action.text) {
                 case "关于我们":
-                    location.href = 'main.html';
+                    location.href = '/main';
                     break;
                 case "常见问题":
-                    location.href = 'main.html?type=qa';
+                    location.href = '/main?type=qa';
                     break;
             }
 

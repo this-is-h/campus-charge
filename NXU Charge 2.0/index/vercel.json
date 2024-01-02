@@ -1,19 +1,23 @@
 {
     "version": 2,
     "routes": [
-    {
-        "src": "/charge/(index.html)?",
-        "dest": "/dist/index.html",
-        "methods": ["GET"]
-    },
-    {
-        "src": "/charge/static/(.*)",
-        "dest": "/dist/static/$1",
-        "methods": ["GET"]
-    },
-    {
-        "src": "/([^\/]*)",
-        "status": 403
-    }
+        {
+            "src": "/charge/(.*)",
+            "dest": "/$1",
+            "methods": ["GET"]
+        },
+        {
+            "src": "/charge/static/(.*)",
+            "dest": "/dist/static/$1",
+            "methods": ["GET"]
+        },
+        {
+            "src": "/([^\/]*)",
+            "status": 403
+        },
+        {
+            "src": "",
+            "status": 403
+        }
     ]
 }
