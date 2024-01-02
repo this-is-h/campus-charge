@@ -9,6 +9,6 @@
     "redirects": [
         { "source": "/charge/:match*", "destination": "/:match*" },
         { "source": "/api/:match*", "destination": "/api/php/:match*" },
-        { "source": "/*", "destination": "/403", "statusCode": "403" }
+        { "source": "/[^\/]*", "destination": "/403", "statusCode": 403 }
     ]
 }
