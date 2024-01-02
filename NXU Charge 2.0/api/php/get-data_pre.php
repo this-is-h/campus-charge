@@ -156,6 +156,8 @@ $dataArray = array(
 //     return;
 // }
 
+header("Access-Control-Allow-Origin: *");
+
 $servername = $Secret['mysql.server'];
 $username = $Secret['mysql.username'];
 $password = $Secret['mysql.password'];
@@ -196,7 +198,7 @@ if ($time_now - $pile_time > 60000) {
     if ($conn->query($query) != TRUE) {
         die('{"state": 301, "success": false, "error_msg": "数据更新失败"}');
     }
-    
+
     $token_get = true;
     $sql = "SELECT `token` FROM `data` WHERE id = 1";
     $result = $conn->query($sql);

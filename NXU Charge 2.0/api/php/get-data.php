@@ -1,56 +1,5 @@
 <?php
 require('secret.php');
-// 设定时区为中国
-date_default_timezone_set('Asia/Shanghai');
-function data($number, $token, $Secret) {
-    // 服务器禁止使用
-    // global $token;
-    $url = "https://h5.2ye.cn/api/charger/port?productid=" . $number;
-    $headers = array(
-        'Host: h5.2ye.cn',
-        'Connection: keep-alive',
-        'Content-Length: 0',
-        'tls: ' . floor(microtime(true) * 1000), // Unix timestamp in milliseconds
-        'Accept: application/json, text/plain, */*',
-        'clientid: ' . $Secret['clientid'], //自行从官方接口爬取 clientid
-        'token: ' .  $token,
-        'User-Agent: Mozilla/5.0 (Linux; Android 12; ELS-AN00 Build/HUAWEIELS-AN00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4435 MMWEBSDK/20230202 Mobile Safari/537.36 MMWEBID/9699 MicroMessenger/8.0.33.2320(0x28002151) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64',
-        'Origin: https://h5.2ye.cn',
-        'X-Requested-With: com.tencent.mm',
-        'Sec-Fetch-Site: same-origin',
-        'Sec-Fetch-Mode: cors',
-        'Sec-Fetch-Dest: empty',
-        'Referer: https://h5.2ye.cn/',
-        'Accept-Encoding: gzip, deflate',
-        'Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7'
-    );
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); 
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE); 
-    // curl_setopt($ch, CURLOPT_TIMEOUT_MS, 800);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true );
-    curl_setopt($ch, CURLOPT_ENCODING, '');
-    curl_setopt($ch, CURLOPT_ENCODING, '');
-    $output = curl_exec($ch);
-    if ($output === false) {
-        // 获取错误信息和错误代码
-        $error_message = curl_error($ch);
-        $error_code = curl_errno($ch);
-        curl_close($ch);
-        return array(false, "Error: $error_message ($error_code)<br>");
-    } else {
-        curl_close($ch);
-        preg_match("/\{.*\}/", $output, $result);
-        $result = json_decode($result[0], true);
-        return array(true, $result);
-    }
-}
-
 $dataMap = array(
     "c14" =>   array("88227178", "88227167", "88227166", "88227164", "89627130", "89627062", "89627114", "89627112", "89627111", "89624194", "89627126", "89627113"),
 	"a2" =>    array("88227927", "88227928", "88227165"),
@@ -156,7 +105,7 @@ $dataArray = array(
 //     return;
 // }
 
-header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Origin: https://nxu.thisish.cn");
 
 $servername = $Secret['mysql.server'];
 $username = $Secret['mysql.username'];
@@ -175,86 +124,6 @@ if (!array_key_exists($pile, $dataMap)) {
     die('{"state": 300, "success": false, "error_msg": "pile参数有误"}');
 }
 $locate = $dataMap[$pile];
-
-$response = array(
-    'warning' => false
-);
-
-$sqlStr = sprintf("select `%s` from `data` where id = 1", $pile);
-$rows = $conn->query($sqlStr);
-if ($rows->num_rows > 0) {
-    while($row = $rows->fetch_assoc()) {
-        $pile_time = $row[$pile];
-    }
-} else {
-    // printf("query failed, err:%s\n", $conn->error);
-    die('{"state": 301, "success": false, "error_msg": "数据获取失败"}');
-}
-
-$time_now = round(microtime(true) * 1000);
-if ($time_now - $pile_time > 60000) {
-    $time_now = round(microtime(true) * 1000);
-    $query = "UPDATE `data` SET `$pile` = $time_now WHERE id = 1";
-    if ($conn->query($query) != TRUE) {
-        die('{"state": 301, "success": false, "error_msg": "数据更新失败"}');
-    }
-
-    $token_get = true;
-    $sql = "SELECT `token` FROM `data` WHERE id = 1";
-    $result = $conn->query($sql);
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-            $token = $row["token"];
-        }
-    } else {
-        $token_get = false;
-        $response['warning'] = true;
-        $response['warning_msg'] = 'token获取错误';
-    }
-    // echo $token . '<br>';
-
-    $finish_loop = false;
-    while ($token_get && !$finish_loop) {
-        // echo $seepower_pid . "<br>";
-        // var_dump($curlHandles);
-        if ($finish_loop && count($locate) == 0) {
-            break;
-        }
-        foreach ($locate as $pile_now) {
-            $response_now = data($pile_now, $token, $Secret);
-            // var_dump($response_now);
-            if (!$response_now[0]) {
-                continue;
-            }
-            unset($locate[$pile_now]);
-            $data = $response_now[1];
-            if ($data['err_msg'] == 'token已失效') {
-                $finish_loop = true;
-                $locate = array();
-                $response['warning'] = true;
-                $response['warning_msg'] = 'token过期';
-                break;
-            }
-            foreach ($data['data'] as $index => $pile_data) {
-                if ($pile_data['enable'] == 1) {
-                    $index_add = $index + 1;
-                    $query = "UPDATE `$pile` SET `$index_add` = '1702374170000' WHERE `id` = '$pile_now'";
-                    // echo $query;
-                    if ($conn->query($query) != TRUE) {
-                        die('{"state": 301, "success": false, "error_msg": "数据更新失败"}');
-                    }
-                }
-            }
-        }
-        $finish_loop = true;
-    }
-
-    $time_now = round(microtime(true) * 1000);
-    $query = "UPDATE `data` SET `$pile` = $time_now WHERE id = 1";
-    if ($conn->query($query) != TRUE) {
-        die('{"state": 301, "success": false, "error_msg": "数据更新失败"}');
-    }
-}
 
 $sqlStr = sprintf("select * from `%s` where id > 0", $pile);
 $rows = $conn->query($sqlStr);
@@ -295,11 +164,13 @@ if (!$result) {
 $row = $result->fetch_assoc();
 $timestamp = $row['timestamp'];
 
-$response['code'] = 200;
-$response['success'] = true;
-$response['data'] = $pile_data;
-$response['timestamp'] = $timestamp;
-
+$response = array(
+    "code" => 200,
+    "success" => true,
+    "data" => $pile_data,
+    "timestamp" => $timestamp,
+    'warning' => false
+);
 
 $jsonString = json_encode($response);
 if (!$jsonString) {
