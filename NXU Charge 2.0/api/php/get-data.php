@@ -156,6 +156,8 @@ $dataArray = array(
 //     return;
 // }
 
+header("Access-Control-Allow-Origin: *");
+
 $servername = $Secret['mysql.server'];
 $username = $Secret['mysql.username'];
 $password = $Secret['mysql.password'];

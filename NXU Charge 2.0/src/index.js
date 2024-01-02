@@ -32,6 +32,7 @@ import {
 import 'vant/lib/index.css';
 
 import "@/assets/css/index.css";
+import { VERSION, DATA_URL } from './public.js';
 
 
 function lightToDark() {
@@ -81,10 +82,10 @@ function getData() {
     pile_data_loading.value = true;
     var xhr = createXHR();
     let data_url = 'http://' + location.host + '/charge/get-data.php?pile=';
-    if (dataUrl != '') {
-        data_url = dataUrl;
+    if (DATA_URL != '') {
+        data_url = DATA_URL;
     }
-    xhr.open("GET", data_url + nowLocate.value);
+    xhr.open("GET", data_url + '?pile=' + nowLocate.value);
     xhr.send();
     xhr.onload = function () {
         if (xhr.readyState === 4) {
@@ -162,9 +163,6 @@ function dataProcessing(data) {
     pile_data_loading.value = false;
     loading.value = false;
 }
-
-const version = "1.1.4";
-const dataUrl = ""; // 设置数据源
 
 const lightToDarkVar = ref(true);
 const lightToDarkContent = ref("light");
@@ -391,7 +389,7 @@ app2.mount("#locate-popover");
 createApp({
     setup() {
         return {
-            version
+            VERSION
         }
     }
 }).mount('#version');
