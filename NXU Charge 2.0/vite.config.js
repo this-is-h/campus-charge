@@ -32,6 +32,7 @@ export default defineConfig({
                 nested: resolve(__dirname, 'main.html'),
             },
         },
+        outDir: 'dist/charge'
     },
     resolve: {
         alias: {
