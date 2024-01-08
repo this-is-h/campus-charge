@@ -246,6 +246,23 @@
             <van-tab title="更新日志" name="update">
                 <div id="update" class="mdui-prose">
                     <van-collapse v-model="updateActiveName" accordion>
+                        <van-collapse-item title="V 1.2.0" label="(2023-1-9)" name="16" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    2024年的第一次更新，快来看看我们更新了什么~<br><br>
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>更新数据的10s倒计时</li>
+                                        <li>更新数据超时的弹窗</li>
+                                    </ol>
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>项目搭建平台更换为<code>vercel</code>，对github上的push进行自动构建，更新更及时</li>
+                                        <li>更换域名，配置ssl，连接更安全</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
                         <van-collapse-item title="V 1.1.4" label="(2023-12-31)" name="15" style="font-weight: bold;">
                             <div class="update-item">
                                 <ul class="mdui-list">

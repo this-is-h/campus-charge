@@ -144,7 +144,9 @@
         >
             <div id="locate">
                 <div style="display: flex;justify-content: center;align-items: center;height: 100%;" v-if="pile_data_loading">
-                    <van-loading size="50" vertical color="#1989fa" style="font-weight: bold;font-size: 1.2em;">加载中...</van-loading>
+                    <van-loading size="50" vertical color="#1989fa">
+                        <van-count-down style="font-weight: bold;--van-count-down-text-color:#1989fa" @finish="updateFinish()" :time="updateCountdownTime" format="ss s" />
+                    </van-loading>
                 </div>
                 <div v-else class="column" :class="direction">
                     <div class="pile column" v-for="(pile, index) in pile_data">
@@ -173,7 +175,7 @@
                                         <path d="M753.152 479.4368H613.376c-12.5952 0-22.2208-11.3664-20.1728-23.7568l49.7664-304.8448c3.2768-19.968-21.4016-32.0512-35.2256-17.3056L255.8976 510.0544c-12.1856 13.1072-2.9696 34.5088 14.9504 34.5088H410.624c12.5952 0 22.2208 11.3664 20.1728 23.7568l-49.7664 304.8448c-3.2768 19.968 21.4016 32.0512 35.2256 17.3056l351.8464-376.5248c12.288-13.1072 2.9696-34.5088-14.9504-34.5088z" p-id="id6350"></path>
                                     </svg>
                                     <div class="port-message">
-                                        <p>端口 {{ (index1-1 == 0) ? (index2 + 1) : (index2 + 6) }}</p>
+                                        <p>端口 {{ (index1 - 1 == 0) ? (index2 + 1) : (index2 + 6) }}</p>
                                         <p class="status" v-if="port > 0">
                                             <van-count-down style="color: grey" :value="port" :time="port" @finish="onFinish(index + '-' + index1 + '-' + index2)" />
                                         </p>
