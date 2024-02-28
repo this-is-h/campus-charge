@@ -11,5 +11,10 @@
         { "source": "/api/:match*", "destination": "/api/php/:match*" },
         { "source": "/([^/]*)", "destination": "/error/403", "statusCode": 403 }
     ],
+    "build": {
+        "env": {
+            "NOW_BUILDER_DEBUG": "1"
+        }
+    },
     "trailingSlash": true
 }
