@@ -28,3 +28,9 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+# PHP
+/vendor
+
+# Vercel
+.vercel

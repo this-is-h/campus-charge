@@ -1,10 +1,12 @@
 <?php
+header('content-type: text/plain');
+
 // 这里执行一些服务器检测及测试函数
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
-require './vendor/autoload.php';
+require_once('vendor/autoload.php');
 
 //SMTP needs accurate times, and the PHP time zone MUST be set
 //This should be done in your php.ini, but this is how to do it if you don't have access to that
