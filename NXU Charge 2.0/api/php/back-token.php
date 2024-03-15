@@ -1,4 +1,6 @@
 <?php
+$curl = curl_init();
+
 curl_setopt_array($curl, [
     CURLOPT_URL => "https://h5.2ye.cn/api/oauth/login",
     CURLOPT_RETURNTRANSFER => true,
