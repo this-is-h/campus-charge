@@ -1,4 +1,7 @@
 <?php
+var_dump($_GET);
+exit;
+
 $curl = curl_init();
 
 curl_setopt_array($curl, [
