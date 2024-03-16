@@ -1,4 +1,7 @@
 <?php
+// 设定时区为中国
+date_default_timezone_set('Asia/Shanghai');
+
 $curl = curl_init();
 
 curl_setopt_array($curl, [
@@ -36,7 +39,27 @@ $err = curl_error($curl);
 curl_close($curl);
 
 if ($err) {
-    echo "cURL Error #:" . $err;
+    die("cURL Error #:" . $err);
+}
+
+$servername = $Secret['mysql.server'];
+$username = $Secret['mysql.username'];
+$password = $Secret['mysql.password'];
+$connname = $Secret['mysql.dbname'];
+
+// 创建连接
+$conn = new mysqli($servername, $username, $password, $connname);
+// 检测连接
+if ($conn->connect_error) {
+    die('{"state": 301, "success": false, "error_msg": "数据库连接失败"}');
+}
+
+$token = json_decode($response, true)["data"]["refresh_token"];
+$now_time = round(microtime(true) * 1000);
+$sql = "UPDATE `data` SET token=$token,`token-time`=$now_time WHERE id=1";
+
+if ($conn->query($sql) === TRUE) {
+    echo "成功更新token";
 } else {
-    echo $response;
+    echo "出现了一些问题...";
 }
