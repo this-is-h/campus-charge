@@ -42,6 +42,7 @@ curl_close($curl);
 if ($err) {
     die("cURL Error #:" . $err);
 }
+echo json_decode($response, true);
 
 $servername = $Secret['mysql.server'];
 $username = $Secret['mysql.username'];
