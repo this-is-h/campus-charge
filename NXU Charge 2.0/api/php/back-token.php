@@ -43,6 +43,7 @@ if ($err) {
     die("cURL Error #:" . $err);
 }
 var_dump(json_decode($response, true));
+echo "<br><br>";
 
 $servername = $Secret['mysql.server'];
 $username = $Secret['mysql.username'];
@@ -58,7 +59,10 @@ if ($conn->connect_error) {
 
 $token = json_decode($response, true)["data"]["refresh_token"];
 $now_time = round(microtime(true) * 1000);
-$sql = "UPDATE `data` SET `token`=$token,`token-time`=$now_time WHERE id=1";
+$sql = "UPDATE `data` SET `token`=`$token`,`token-time`=`$now_time` WHERE id=1";
+echo $sql;
+echo "<br><br>";
+
 
 if ($conn->query($sql) === TRUE) {
     echo "成功更新token";
