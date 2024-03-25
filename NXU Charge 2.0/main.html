@@ -183,7 +183,7 @@
                             <template #label >
                                 <ol style="padding-left: 1em;list-style: auto;">
                                     <li>
-                                        目前搭建于 <code>InfinityFree</code> 提供的免费虚拟主机上。
+                                        目前部署于 <code>Vercel</code> 平台上。
                                     </li>
                                     <li>
                                         目前由 <code>华为云函数工作流服务</code> 托管数据更新任务。
@@ -207,7 +207,8 @@
                                     <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">url: https://h5.2ye.cn/api/chargerlog/power</mdui-chip><br>
                                     <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">method: POST</mdui-chip><br>
                                     <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">query: seepower_pid</mdui-chip><br>
-                                    由于接口返回的数据只精确到分钟，所以倒计时可能存在1分钟的误差。
+                                    接口返回的数据只精确到分钟，根据实际考察，倒计时可能存在10分钟以内的误差。
+                                    受数据库刷新频率限制，实际空闲充电桩可能存在1分钟的误差。刷新频率见 <code>Q2</code> 。
                                 </p>
                             </div>
                         </van-collapse-item>

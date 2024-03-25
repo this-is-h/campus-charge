@@ -86,7 +86,7 @@ const navbar = createApp({
     setup() {
         const onClickLeft = () => {
             if (document.referrer == '') {
-                location.href = '/charge';
+                location.href = '/';
             } else {
                 location.href = document.referrer;
             }
