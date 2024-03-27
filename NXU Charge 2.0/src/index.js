@@ -304,7 +304,7 @@ const app1 = createApp({
                     location.href = '/main';
                     break;
                 case "常见问题":
-                    location.href = '/main?type=qa';
+                    location.href = '/main/qa';
                     break;
             }
 
