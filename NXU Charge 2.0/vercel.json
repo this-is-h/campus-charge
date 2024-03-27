@@ -7,6 +7,7 @@
         }
     },
     "rewrites": [
+        { "source": "/main", "destination": "/main.html" },
         { "source": "/main/:type", "destination": "/main.html" },
         { "source": "/api/:match*", "destination": "/api/php/:match*" },
         { "source": "/([^/]*)", "destination": "/error/403", "statusCode": 403 }

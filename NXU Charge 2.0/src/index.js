@@ -301,7 +301,7 @@ const app1 = createApp({
             console.log(action.text)
             switch(action.text) {
                 case "关于我们":
-                    location.href = '/main';
+                    location.href = '/main/about';
                     break;
                 case "常见问题":
                     location.href = '/main/qa';
