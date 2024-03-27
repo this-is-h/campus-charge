@@ -11,5 +11,5 @@
         { "source": "/api/:match*", "destination": "/api/php/:match*" },
         { "source": "/([^/]*)", "destination": "/error/403", "statusCode": 403 }
     ],
-    "trailingSlash": true
+    "trailingSlash": false
 }
