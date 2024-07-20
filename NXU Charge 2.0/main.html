@@ -237,7 +237,7 @@
                             <div class="qa-item">
                                 <p>
                                     目前暂由 <strong>H</strong> 个人维护，已在github上开源<br>
-                                    如您有更好的意见和建议，欢迎提交<code>issue</code>
+                                    如您有更好的意见和建议，欢迎提交 <code>issue</code>
                                 </p>
                             </div>
                         </van-collapse-item>
@@ -247,7 +247,17 @@
             <van-tab title="更新日志" name="update">
                 <div id="update" class="mdui-prose">
                     <van-collapse v-model="updateActiveName" accordion>
-                        <van-collapse-item title="V 1.2.0" label="(2023-1-9)" name="16" style="font-weight: bold;">
+                        <van-collapse-item title="V 1.2.2" label="(2024-3-31)" name="17" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>路径调整及优化</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
+                        <van-collapse-item title="V 1.2.0" label="(2024-1-9)" name="16" style="font-weight: bold;">
                             <div class="update-item">
                                 <ul class="mdui-list">
                                     2024年的第一次更新，快来看看我们更新了什么~<br><br>
@@ -596,6 +606,11 @@
                         <van-cell title="ChatGPT" label="ChatGPT is a sibling model to InstructGPT, which is trained to follow an instruction in a prompt and provide a detailed response." url="https://chat.openai.com/" center is-link>
                             <template #icon>
                                 <img style="margin-right: 10px;width: 24px;" src="https://cdn.oaistatic.com/_next/static/media/favicon-32x32.be48395e.png" />
+                            </template>
+                        </van-cell>
+                        <van-cell title="Watt Toolkit" label="「Watt Toolkit」是一个开源跨平台的多功能 Steam 工具箱。" url="https://steampp.net/" center is-link>
+                            <template #icon>
+                                <img style="margin-right: 10px;width: 24px;" src="https://steampp.net/svg/logo.png" />
                             </template>
                         </van-cell>
                     </van-cell-group>

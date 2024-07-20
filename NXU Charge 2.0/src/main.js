@@ -116,7 +116,7 @@ app.mount('#config-provider');
 const main = createApp({
     setup() {
         const active = ref("about");
-        var option = getQueryVariable("type");
+        var option = getQueryVariable("page");
         if (["about","qa","update", "thanks"].includes(option)){
             active.value = option;
         }
