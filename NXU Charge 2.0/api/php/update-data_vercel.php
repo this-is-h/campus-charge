@@ -1,5 +1,6 @@
 <?php
 require('secret.php');
+header('X-Accel-Buffering: no');
 function data($number) {
     $url = "https://h5.2ye.cn/api/chargerlog/power?seepower_pid=" . $number;
     $headers = array(
@@ -201,6 +202,8 @@ $curlHandles = [];
 
 while (!$finish_loop || !$confirm_loop) {
     echo $seepower_pid . "<br>";
+    ob_flush(); 
+    flush();
     // var_dump($curlHandles);
     if ($finish_loop) {
         if (count($curlHandles) == 0) {
@@ -208,7 +211,9 @@ while (!$finish_loop || !$confirm_loop) {
         }
     } else {
         if ($seepower_pid - $seepower_pid_start > 500) {
-            // echo "数额过大<br>";
+            echo "数额过大<br>";
+            ob_flush(); 
+            flush();
             $seepower_pid_end[] = $seepower_pid;
             $finish_loop = true;
             continue;
@@ -234,6 +239,8 @@ while (!$finish_loop || !$confirm_loop) {
         if (empty($response)) {
             // 处理出错的情况
             echo $id . ': error<br>';
+            ob_flush(); 
+            flush();
             // 关闭出错的句柄
             curl_multi_remove_handle($multiHandle, $ch);
             curl_close($ch);
@@ -246,6 +253,8 @@ while (!$finish_loop || !$confirm_loop) {
             continue;
         }
         echo $id . ': ok<br>';
+        ob_flush(); 
+        flush();
         curl_multi_remove_handle($multiHandle, $ch);
         curl_close($ch);
         $data = json_decode($response, true);
@@ -286,8 +295,14 @@ while (!$finish_loop || !$confirm_loop) {
         } else {
             echo "更新数据库失败: " . $conn->error;
         }
+
+        ob_flush(); 
+        flush();
     }
     $seepower_pid += 10;
+
+    ob_flush(); 
+    flush();
 }
 echo $seepower_pid - $seepower_pid_start;
 // 更新数据库
