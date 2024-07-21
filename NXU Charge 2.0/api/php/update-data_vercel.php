@@ -138,7 +138,7 @@ $password = $Secret['mysql.password'];
 $connname = $Secret['mysql.dbname'];
 
 // 创建连接
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli($servername, $username, $password, $connname);
 $conn->options(MYSQLI_OPT_CONNECT_TIMEOUT, 5);
 // 检测连接
 if ($conn->connect_error) {
