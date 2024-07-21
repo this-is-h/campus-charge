@@ -1,5 +1,6 @@
 <?php
 require('secret.php');
+header('X-Accel-Buffering: no');
 function data($number) {
     $url = "https://h5.2ye.cn/api/chargerlog/power?seepower_pid=" . $number;
     $headers = array(
@@ -31,6 +32,23 @@ function data($number) {
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true );
     curl_setopt($ch, CURLOPT_ENCODING, '');
     return $ch;
+    // $output = curl_exec($ch);
+    // $output = curl_exec($ch);
+    // // var_dump($output);
+    // // 检查是否有错误发生
+    // if ($output === false) {
+    //     // 获取错误信息和错误代码
+    //     $error_message = curl_error($ch);
+    //     $error_code = curl_errno($ch);
+    //     echo "$number - Error: $error_message ($error_code)<br>";
+    //     curl_close($ch);
+    //     return null;
+    // } else {
+    //     curl_close($ch);
+    //     preg_match("/\{.*\}/", $output, $result);
+    //     $result = json_decode($result[0], true);
+    //     return $result;
+    // }
 }
 
 $dataMap = array(
@@ -130,6 +148,31 @@ if ($conn->connect_error) {
 
 echo microtime(true) - $time . '<br>';
 
+// 查询数据库并更新数据
+// $sql = "SELECT `using` FROM `data` WHERE id = 1";
+// $result = $conn->query($sql);
+
+// if ($result->num_rows > 0) {
+//     while($row = $result->fetch_assoc()) {
+//         $using = $row["using"];
+//     }
+// } else {
+//     die("0 结果");
+// }
+
+// if ($using) {
+//     // echo "正在更新中";
+//     die("正在更新中");
+// }
+
+// $update_using = "UPDATE `data` SET `using` = TRUE WHERE id = 1";
+
+// if ($conn->query($update_using) === TRUE) {
+//     // echo "设置为正在更新";
+// } else {
+//     // echo "更新数据库失败: " . $conn->error;
+// }
+
 // 获取初始值
 $sql = "SELECT `num` FROM `data` WHERE id = 1";
 $result = $conn->query($sql);
@@ -149,87 +192,122 @@ if ($seepower_pid_start == -1) {
 // $seepower_pid_start = 33566000;
 
 $seepower_pid = $seepower_pid_start;
-$seepower_pid_end = $seepower_pid_start;
+$seepower_pid_end = array();
 
 $finish_loop = false;
 $confirm_loop = false;
 
+$multiHandle = curl_multi_init();
+$curlHandles = [];
 
-while (!$finish_loop) {
+while (!$finish_loop || !$confirm_loop) {
     echo $seepower_pid . "<br>";
+    ob_flush(); 
+    flush();
     // var_dump($curlHandles);
-
-    if ($seepower_pid - $seepower_pid_start > 500) {
-        echo "数额过大<br>";
-        $seepower_pid_end = $seepower_pid;
-        $finish_loop = true;
-        break;
-    }
-
-    $ch = data($seepower_pid_now);
-    // // 检查请求是否出错
-    // $curlError = curl_error($ch);
-    $response = curl_exec($ch);
-    $err = curl_error($ch);
-    curl_close($ch);
-
-    if (empty($response)) {
-        // 处理出错的情况
-        echo $seepower_pid . ': error<br>';
-        // echo $seepower_pid . ': retry<br>';
-        $seepower_pid += 1;
-        continue;
-    }
-
-    echo $seepower_pid . ': ok<br>';
-    $data = json_decode($response, true);
-    if ($data && isset($data['err_code']) && $data['err_code'] === 502 && isset($data['err_msg']) && $data['err_msg'] === '记录不存在') {
-        $seepower_pid_end = $seepower_pid;
-        $finish_loop = true;
-        break;
-    }
-    // 从响应数据中获取需要的字段
-    $product_id = $data['data']['productid'];
-    $port = $data['data']['port'];
-    $start_time = $data['data']['start_date'];
-    $total_time = $data['data']['total_time'];
-
-    if (!array_key_exists($product_id, $dataArray)) {
-        $seepower_pid += 1;
-        continue;
-    }
-    $pile = $dataArray[$product_id];
-    // 将开始时间转换为时间戳
-    $timeObj = strtotime($start_time);
-    if ($timeObj === false) {
-        echo "时间解析错误\n";
-        die();
-    }
-    // 加上指定的分钟数
-    $timePlusBMinutes = strtotime("+" . $total_time . " minutes", $timeObj);
-    // 将加上分钟数后的时间对象转换为毫秒级时间戳
-    $end_time = $timePlusBMinutes * 1000; // 转换为毫秒级时间戳 
-
-    // 更新数据库（假设数据库连接已建立）
-    $query = "UPDATE `$pile` SET `$port` = '$end_time' WHERE `id` = '$product_id'";
-    if ($conn->query($query) === TRUE) {
-        echo $seepower_pid . ": mysql ok";
+    if ($finish_loop) {
+        if (count($curlHandles) == 0) {
+            $confirm_loop = true;
+        }
     } else {
-        echo $seepower_pid . ": mysql error " . $conn->error;
+        if ($seepower_pid - $seepower_pid_start > 500) {
+            echo "数额过大<br>";
+            ob_flush(); 
+            flush();
+            $seepower_pid_end[] = $seepower_pid;
+            $finish_loop = true;
+            continue;
+        }
+        for ($i = 0; $i < 10; $i++) {
+            $seepower_pid_now = $seepower_pid + $i;
+            $ch_now = data($seepower_pid_now);
+            $curlHandles[$seepower_pid_now] = $ch_now;
+            curl_multi_add_handle($multiHandle, $ch_now);
+        }
     }
+    // 执行多个 cURL 句柄
+    $running = null;
+    do {
+        curl_multi_exec($multiHandle, $running);
+        curl_multi_select($multiHandle); // 等待I/O事件
+    } while ($running > 0);
+    foreach ($curlHandles as $id => $ch) {
+        unset($curlHandles[$id]);
+        // // 检查请求是否出错
+        // $curlError = curl_error($ch);
+        $response = curl_multi_getcontent($ch);
+        if (empty($response)) {
+            // 处理出错的情况
+            echo $id . ': error<br>';
+            ob_flush(); 
+            flush();
+            // 关闭出错的句柄
+            curl_multi_remove_handle($multiHandle, $ch);
+            curl_close($ch);
+            
+            // 重新创建句柄并添加到多句柄中
+            $newCh = data($id); // 使用相同的 URL 重新创建句柄
+            
+            $curlHandles[$id] = $newCh;
+            curl_multi_add_handle($multiHandle, $newCh);
+            continue;
+        }
+        echo $id . ': ok<br>';
+        ob_flush(); 
+        flush();
+        curl_multi_remove_handle($multiHandle, $ch);
+        curl_close($ch);
+        $data = json_decode($response, true);
+        if ($data && isset($data['err_code']) && $data['err_code'] === 502 && isset($data['err_msg']) && $data['err_msg'] === '记录不存在') {
+            // echo "Record not found. Exiting loop.";
+            $seepower_pid_end[] = $id;
+            $finish_loop = true;
+            continue;
+        } else if (count($seepower_pid_end) > 0 && $id > min($seepower_pid_end)) {
+            $seepower_pid_end = array();
+            $finish_loop = false;
+        }
+        // 从响应数据中获取需要的字段
+        $product_id = $data['data']['productid'];
+        $port = $data['data']['port'];
+        $start_time = $data['data']['start_date'];
+        $total_time = $data['data']['total_time'];
 
-    $seepower_pid += 1;
+        if (!array_key_exists($product_id, $dataArray)) {
+            continue;
+        }
+        $pile = $dataArray[$product_id];
+        // 将开始时间转换为时间戳
+        $timeObj = strtotime($start_time);
+        if ($timeObj === false) {
+            echo "时间解析错误\n";
+            die();
+        }
+        // 加上指定的分钟数
+        $timePlusBMinutes = strtotime("+" . $total_time . " minutes", $timeObj);
+        // 将加上分钟数后的时间对象转换为毫秒级时间戳
+        $end_time = $timePlusBMinutes * 1000; // 转换为毫秒级时间戳 
+
+        // 更新数据库（假设数据库连接已建立）
+        $query = "UPDATE `$pile` SET `$port` = '$end_time' WHERE `id` = '$product_id'";
+        if ($conn->query($query) === TRUE) {
+            echo "数据库更新成功";
+        } else {
+            echo "更新数据库失败: " . $conn->error;
+        }
+
+        ob_flush(); 
+        flush();
+    }
+    $seepower_pid += 10;
+
+    ob_flush(); 
+    flush();
 }
-
-echo '<br>';
-echo $seepower_pid_start;
-echo $seepower_pid;
 echo $seepower_pid - $seepower_pid_start;
-echo '<br>';
-
 // 更新数据库
 $now_time = round(microtime(true) * 1000);
-$seepower_pid_end = $seepower_pid_end - 1;
+$seepower_pid_end = min($seepower_pid_end);
 $query = "UPDATE `data` SET `num` = $seepower_pid_end, `timestamp` = $now_time, `using` = FALSE WHERE id = 1";
 if ($conn->query($query) === TRUE) {
     echo "数据库更新成功";
