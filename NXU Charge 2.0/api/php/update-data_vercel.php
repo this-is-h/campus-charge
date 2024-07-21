@@ -1,5 +1,7 @@
 <?php
 require('secret.php');
+set_time_limit(0);
+header('X-Accel-Buffering: no');
 function data($number) {
     $url = "https://h5.2ye.cn/api/chargerlog/power?seepower_pid=" . $number;
     $headers = array(
@@ -115,6 +117,10 @@ date_default_timezone_set('Asia/Shanghai');
 
 $time = microtime(true);
 
+echo 'start<br>';
+ob_flush(); 
+flush();
+
 $servername = $Secret['mysql.server'];
 $username = $Secret['mysql.username'];
 $password = $Secret['mysql.password'];
@@ -154,6 +160,8 @@ $seepower_pid_end = $seepower_pid_start;
 $finish_loop = false;
 $confirm_loop = false;
 
+$retry_times = 0;
+$error_pid = 0;
 
 while (!$finish_loop) {
     echo $seepower_pid . "<br>";
@@ -166,21 +174,49 @@ while (!$finish_loop) {
         break;
     }
 
-    $ch = data($seepower_pid_now);
-    // // 检查请求是否出错
-    // $curlError = curl_error($ch);
+    $ch = data($seepower_pid);
     $response = curl_exec($ch);
     $err = curl_error($ch);
     curl_close($ch);
 
-    if (empty($response)) {
-        // 处理出错的情况
-        echo $seepower_pid . ': error<br>';
-        // echo $seepower_pid . ': retry<br>';
-        $seepower_pid += 1;
+    if ($err) {
+        echo "cURL Error #:" . $err . '<br>';
+        if ($seepower_pid == $error_pid) {
+            if ($retry_times > 3) {
+                $seepower_pid += 1;
+                $retry_times = 0;
+                continue;
+            }
+            echo $seepower_pid . ': retry ' . $retry_times . '<br>';
+            $retry_times += 1;
+            continue;
+        }
+        $error_pid = $seepower_pid;
+        $retry_times += 1;
+        echo $seepower_pid . ': retry ' . $retry_times . '<br>';
         continue;
     }
 
+    if (empty($response)) {
+        // 处理出错的情况
+        echo $seepower_pid . ': error<br>';
+        if ($seepower_pid == $error_pid) {
+            if ($retry_times > 3) {
+                $seepower_pid += 1;
+                $retry_times = 0;
+                continue;
+            }
+            echo $seepower_pid . ': retry ' . $retry_times . '<br>';
+            $retry_times += 1;
+            continue;
+        }
+        $error_pid = $seepower_pid;
+        $retry_times += 1;
+        echo $seepower_pid . ': retry ' . $retry_times . '<br>';
+        continue;
+    }
+
+    $retry_times = 0;
     echo $seepower_pid . ': ok<br>';
     $data = json_decode($response, true);
     if ($data && isset($data['err_code']) && $data['err_code'] === 502 && isset($data['err_msg']) && $data['err_msg'] === '记录不存在') {
@@ -214,16 +250,23 @@ while (!$finish_loop) {
     $query = "UPDATE `$pile` SET `$port` = '$end_time' WHERE `id` = '$product_id'";
     if ($conn->query($query) === TRUE) {
         echo $seepower_pid . ": mysql ok";
+        echo '<br>';
     } else {
         echo $seepower_pid . ": mysql error " . $conn->error;
+        echo '<br>';
     }
 
     $seepower_pid += 1;
+
+    ob_flush(); 
+    flush();
 }
 
 echo '<br>';
 echo $seepower_pid_start;
+echo '<br>';
 echo $seepower_pid;
+echo '<br>';
 echo $seepower_pid - $seepower_pid_start;
 echo '<br>';
 
