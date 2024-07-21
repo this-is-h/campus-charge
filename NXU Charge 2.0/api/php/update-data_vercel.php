@@ -1,4 +1,5 @@
 <?php
+require('secret.php');
 function data($number) {
     $url = "https://h5.2ye.cn/api/chargerlog/power?seepower_pid=" . $number;
     $headers = array(
@@ -132,10 +133,10 @@ function handler($event, $context) {
 
     $time = microtime(true);
 
-    $servername = "your server name";
-    $username = "your username";
-    $password = "your password";
-    $connname = "your con name";
+    $servername = $Secret['mysql.server'];
+    $username = $Secret['mysql.username'];
+    $password = $Secret['mysql.password'];
+    $connname = $Secret['mysql.dbname'];
 
     // 创建连接
     $conn = new mysqli($servername, $username, $password, $dbname);
