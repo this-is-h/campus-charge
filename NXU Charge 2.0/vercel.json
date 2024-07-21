@@ -3,12 +3,12 @@
         "api/php/*.php": {
             "runtime": "vercel-php@0.7.0",
             "memory": 1024,
-            "maxDuration": 10
+            "maxDuration": 60
         }
     },
+    "cleanUrls": true,
     "rewrites": [
-        { "source": "/main/:page", "destination": "/main.html" },
-        { "source": "/main", "destination": "/main.html" },
+        { "source": "/main/:page", "destination": "/main" },
         { "source": "/api/:match*", "destination": "/api/php/:match*" },
         { "source": "/([^/]*)", "destination": "/error/403", "statusCode": 403 }
     ],
