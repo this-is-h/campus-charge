@@ -1,3 +1,3 @@
 <?php
-require("data.php");
+require("total/data.php");
 var_dump($DataMap);
