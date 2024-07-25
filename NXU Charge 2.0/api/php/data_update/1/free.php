@@ -128,34 +128,6 @@ $dataArray = array(
 	"86060236" => "c8",
 );
 
-// // 允许跨源请求的域名列表
-// $allowedOrigins = array(
-//     "http://nxu.imqde.gq",
-//     "http://localhost:5173",
-// );
-
-// // 获取请求头中的 Origin
-// $headers = getallheaders();
-// if (array_key_exists('Origin', $headers)) {
-//     die(111);
-// }
-// $origin = $headers['Origin'];
-// $origin_continue = false;
-
-// // 检查 Origin 是否在允许的域名列表中
-// // 如果 Origin 存在于允许列表中，则设置对应的 CORS 头部
-// foreach ($allowedOrigins as $allowedOrigin) {
-//     if ($allowedOrigin == $origin) {
-//         header("Access-Control-Allow-Origin: $origin");
-//         $origin_continue = true;
-//         break;
-//     }
-// }
-
-// if (!$origin_continue) {
-//     return;
-// }
-
 $servername = $Secret['mysql.server'];
 $username = $Secret['mysql.username'];
 $password = $Secret['mysql.password'];
@@ -217,8 +189,7 @@ $response = array(
     "code" => 200,
     "success" => true,
     "data" => $pile_data,
-    "timestamp" => $timestamp,
-    'warning' => false
+    "timestamp" => $timestamp
 );
 
 $token_get = true;
@@ -236,35 +207,63 @@ if ($result->num_rows > 0) {
 // echo $token . '<br>';
 
 $finish_loop = false;
+$multiHandle = curl_multi_init();
+$curlHandles = [];
 while ($token_get && !$finish_loop) {
     // echo $seepower_pid . "<br>";
     // var_dump($curlHandles);
-    if ($finish_loop && count($locate) == 0) {
+    if ($finish_loop && count($curlHandles) == 0) {
         break;
+    } else {
+        foreach ($locate as $pile) {
+            $ch_now = data($pile, $token, $Secret);
+            $curlHandles[$pile] = $ch_now;
+            curl_multi_add_handle($multiHandle, $ch_now);
+        }
     }
-    foreach ($locate as $pile) {
-        $response_now = data($pile, $token, $Secret);
-        // var_dump($response_now);
-        if (!$response_now[0]) {
+    // 执行多个 cURL 句柄
+    $running = null;
+    do {
+        curl_multi_exec($multiHandle, $running);
+        curl_multi_select($multiHandle); // 等待I/O事件
+    } while ($running > 0);
+    foreach ($curlHandles as $id => $ch) {
+        // echo $id . '<br>';
+        unset($curlHandles[$id]);
+        // // 检查请求是否出错
+        // $curlError = curl_error($ch);
+        $response_now = curl_multi_getcontent($ch);
+        if (empty($response_now)) {
+            // 处理出错的情况
+            // echo $id . ': error<br>';
+            // 关闭出错的句柄
+            curl_multi_remove_handle($multiHandle, $ch);
+            curl_close($ch);
+            // 重新创建句柄并添加到多句柄中
+            $newCh = data($id, $token, $Secret); // 使用相同的 URL 重新创建句柄
+            $curlHandles[$id] = $newCh;
+            curl_multi_add_handle($multiHandle, $newCh);
             continue;
         }
-        unset($locate[$pile]);
-        $data = $response_now[1];
+        // echo $id . ': ok<br>';
+        curl_multi_remove_handle($multiHandle, $ch);
+        curl_close($ch);
+        $data = json_decode($response_now, true);
         if ($data['err_msg'] == 'token已失效') {
             $finish_loop = true;
-            $locate = array();
             $response['warning'] = true;
             $response['warning_msg'] = 'token过期';
             break;
         }
         foreach ($data['data'] as $index => $pile_data) {
             if ($pile_data['enable'] == 1) {
-                $response['data'][$pile][$index] = '1702374170000';
+                $response['data'][$id][$index] = '1702374170000';
             }
         }
+        $finish_loop = true;
     }
-    $finish_loop = true;
 }
+curl_multi_close($multiHandle);
 
 $jsonString = json_encode($response);
 if (!$jsonString) {

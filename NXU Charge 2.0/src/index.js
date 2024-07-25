@@ -82,7 +82,7 @@ function getData() {
     pile_data_loading.value = true;
     updateCountdownTime.value = 10000;
     var xhr = createXHR();
-    let data_url = '/api/get-data.php';
+    let data_url = '/api/data_get/index.php';
     if (DATA_URL != '') {
         data_url = DATA_URL;
     }
@@ -235,7 +235,7 @@ watch(error, (newError) => {
     const error_array = {
         "data": ["数据出错", "获取数据发生错误\n若多次刷新仍出现该错误\n请与开发者联系"],
         "data-custom": ["数据出错", newError.content],
-        "token": ["更新数据出现问题", "当前服务器使用的token已失效\n这会导致部分空闲充电桩错误显示为正在使用\n开发者会不定期检查token的可用性，但可能目前尚未发现该问题\n你可以反馈问题\n或者使用微信打开以下链接\nhttps://nxu-charge.thisish.cn/api/php/get-token\n或者忽略这个问题继续使用"],
+        "token": ["更新数据出现问题", "当前服务器使用的token已失效\n这会导致部分空闲充电桩错误显示为正在使用\n开发者会不定期检查token的可用性，但可能目前尚未发现该问题\n你可以反馈问题\n或者使用微信打开以下链接\nhttps://nxu-charge.thisish.cn/api/token/get-token\n或者忽略这个问题继续使用"],
     }
     if (newError.type == "normal") {
         showConfirmDialog({
