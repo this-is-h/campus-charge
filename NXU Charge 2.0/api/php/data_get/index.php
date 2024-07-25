@@ -104,7 +104,7 @@
 //     return;
 // }
 
-function main() {
+function main($Secret, $DataMap) {
     header("Access-Control-Allow-Origin: https://nxu.thisish.cn");
 
     $servername = $Secret['mysql.server'];
@@ -120,10 +120,10 @@ function main() {
     }
 
     $pile = $_GET['pile'];
-    if (!array_key_exists($pile, $dataMap)) {
+    if (!array_key_exists($pile, $DataMap)) {
         die('{"state": 300, "success": false, "error_msg": "pile参数有误"}');
     }
-    $locate = $dataMap[$pile];
+    $locate = $DataMap[$pile];
 
     $sqlStr = sprintf("select * from `%s` where id > 0", $pile);
     $rows = $conn->query($sqlStr);
