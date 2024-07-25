@@ -1,5 +1,5 @@
 <?php
-require("../total/secret.php");
+require("/api/total/secret.php");
 // 设定时区为中国
 date_default_timezone_set('Asia/Shanghai');
 function data($number, $token, $Secret) {
