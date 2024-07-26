@@ -1,5 +1,5 @@
 <?php
-require("total/secret_dev.php");
+require("total/secret.php");
 $data = file_get_contents("php://input");
 if (empty($data)) {
     return;

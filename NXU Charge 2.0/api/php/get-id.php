@@ -1,5 +1,5 @@
 <?php
-require("total/secret_dev.php");
+require("total/secret.php");
 $mongo_url = "mongodb+srv://" . $Secret["mongodb.username"] . ":" . $Secret["mongodb.password"] . "@" . $Secret["mongodb.server"] . "/?retryWrites=true&w=majority&appName=h";
 $manager = new MongoDB\Driver\Manager($mongo_url);
 $seepower_pid = 0;
