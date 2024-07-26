@@ -85,6 +85,8 @@ function handler($event, $context) {
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_POSTFIELDS => "",
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
         CURLOPT_HTTPHEADER => [
             "content-type: application/x-www-form-urlencoded"
         ],
@@ -93,7 +95,7 @@ function handler($event, $context) {
     $err = curl_error($curl);
     curl_close($curl);
     if ($err) {
-        echo "get id failed";
+        echo "get id failed" . $err;
         return;
     } else {
         $response = json_decode($response, true);
@@ -200,31 +202,39 @@ function handler($event, $context) {
         }
     }
 
-    var_dump($data_json);
+    $data_result["data"] = $data_json;
+    $data_result["update_time"] = round(microtime(true) * 1000);
+    $data_result["end_id"] = min($seepower_pid_end);
 
-    foreach ($data_json as $pile => $value_pile) {
-        $bulk = new MongoDB\Driver\BulkWrite;
-        foreach ($value_pile as $id => $value_id) {
-            foreach ($value_id as $port => $time) {
-                $bulk->update(
-                    ['productid' => $id],
-                    ['$set' => [$port => $time]],
-                    ['upsert' => true]
-                );
-            }
-        }
-        $manager->executeBulkWrite('nxu_charge.' . $pile, $bulk);
+    var_dump($data_result);
+    echo json_encode($data_result);
+
+    $curl = curl_init();
+    curl_setopt_array($curl, [
+        CURLOPT_URL => "https://nxu-charge.thisish.cn/api/update-data",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => json_encode($data_result),
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_HTTPHEADER => [
+            "content-type: application/json"
+        ],
+    ]);
+    $response = curl_exec($curl);
+    $err = curl_error($curl);
+    curl_close($curl);
+    if ($err) {
+        echo "update failed" . $err;
+        return;
+    } else {
+        echo $response;
+        echo "update succesful";
     }
-
-    $now_time = round(microtime(true) * 1000);
-    $seepower_pid = min($seepower_pid_end);
-    $bulk = new MongoDB\Driver\BulkWrite;
-    $bulk->update(
-        ['id' => 1],
-        ['$set' => ["timestamp" => $now_time, "num" => $seepower_pid]],
-        ['upsert' => true]
-    );
-    $manager->executeBulkWrite('nxu_charge.data', $bulk);
 }
 
 

@@ -1,9 +1,9 @@
 <?php
-require("total/secret.php");
+require("total/secret_dev.php");
 $mongo_url = "mongodb+srv://" . $Secret["mongodb.username"] . ":" . $Secret["mongodb.password"] . "@" . $Secret["mongodb.server"] . "/?retryWrites=true&w=majority&appName=h";
 $manager = new MongoDB\Driver\Manager($mongo_url);
 $seepower_pid = 0;
-$filter = [];
+$filter = ["id" => 1];
 $options = [];
 $query = new MongoDB\Driver\Query($filter, $options);
 $documents = $manager->executeQuery('nxu_charge.data', $query);
