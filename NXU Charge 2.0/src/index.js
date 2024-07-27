@@ -121,18 +121,13 @@ function getData() {
                 try {
                     result_array = JSON.parse(xhr.responseText);
                     if (result_array["code"] == 200 && result_array["successful"] == true) {
-                        // console.log(result_array);
+                        console.log(result_array);
                         if (!result_array["token"]) {
                             error.msg = "token";
                             error.type = "non-refresh";
                             error.isError = true;
                         }
-                        try {
-                            dataProcessing(result_array);
-                        } catch(e) {
-                            console.error("Error：" + e);
-                            return;
-                        }
+                        dataProcessing(result_array);
                     } else {
                         error.msg = "data-custom";
                         error.content = result_array["msg"];
@@ -159,9 +154,9 @@ function getData() {
 }
 
 function dataProcessing(data) {
-    // console.log(data)
+    console.log(data)
     pile_array.value = pileArrayTotal[nowLocate.value];
-    // console.log(pile_array)
+    console.log(pile_array)
     var pile_result = [];
     try {
         for (let i = 0; i < pile_array.value.length; i++) {
@@ -190,7 +185,7 @@ function dataProcessing(data) {
     // 构建格式化后的时间字符串
     const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-    // console.log(pile_result);
+    console.log(pile_result);
     successText.value = "刷新成功 " + formattedTime;
     pile_data.value = pile_result;
     pile_data_loading.value = false;
