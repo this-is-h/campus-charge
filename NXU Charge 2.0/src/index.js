@@ -128,6 +128,7 @@ function getData() {
                             error.isError = true;
                         }
                         dataProcessing(result_array);
+                        return;
                     } else {
                         error.msg = "data-custom";
                         error.content = result_array["msg"];
