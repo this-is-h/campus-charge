@@ -121,13 +121,18 @@ function getData() {
                 try {
                     result_array = JSON.parse(xhr.responseText);
                     if (result_array["code"] == 200 && result_array["successful"] == true) {
-                        console.log(result_array);
+                        // console.log(result_array);
                         if (!result_array["token"]) {
                             error.msg = "token";
                             error.type = "non-refresh";
                             error.isError = true;
                         }
-                        dataProcessing(result_array);
+                        try {
+                            dataProcessing(result_array);
+                        } catch(e) {
+                            console.error("Error：" + e);
+                            return;
+                        }
                     } else {
                         error.msg = "data-custom";
                         error.content = result_array["msg"];
@@ -170,6 +175,7 @@ function dataProcessing(data) {
             }
         }
     } catch(e) {
+        console.error("Error：" + e);
         return;
     }
     const timestamp = parseInt(data.time); // 将字符串转换为数字
