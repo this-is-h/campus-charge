@@ -65,7 +65,6 @@ function data_status($number, $token) {
     // curl_setopt($ch, CURLOPT_TIMEOUT_MS, 800);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true );
     curl_setopt($ch, CURLOPT_ENCODING, '');
-    curl_setopt($ch, CURLOPT_ENCODING, '');
     return $ch;
 }
 
@@ -101,6 +100,7 @@ function handler($event, $context) {
     } else {
         $response = json_decode($response, true);
         $seepower_pid_start = $response["id"];
+        $token = $response["token"];
     }
 
     echo microtime(true) - $time . '<br>';
@@ -204,17 +204,23 @@ function handler($event, $context) {
     }
 
     $id_num = 0;
+    $total_num = count($DataTotalId);
+    $data_result['token'] = true;
+    echo "<br><br><br><br>";
     while (true) {
+        if (!$data_result['token']) {
+            break;
+        }
         echo "<br>";
-        $total_num = count($DataTotalId);
         while (true) {
             if ($id_num > $total_num) {
                 break;
             }
-            $ch_now = data_status($DataTotalId[$id_num]);
-            $curlHandles[$seepower_pid] = $ch_now;
+            $product_id = $DataTotalId[$id_num];
+            $ch_now = data_status($product_id, $token);
+            $curlHandles[$product_id] = $ch_now;
             curl_multi_add_handle($multiHandle, $ch_now);
-            echo "add $seepower_pid";
+            echo "add $product_id";
             echo "<br>";
             if (count($curlHandles) >= 15) {
                 break;
@@ -249,7 +255,7 @@ function handler($event, $context) {
                 curl_close($ch);
                 
                 // 重新创建句柄并添加到多句柄中
-                $newCh = data_start($id); // 使用相同的 URL 重新创建句柄
+                $newCh = data_status($id); // 使用相同的 URL 重新创建句柄
                 
                 $curlHandles[$id] = $newCh;
                 curl_multi_add_handle($multiHandle, $newCh);
@@ -262,37 +268,15 @@ function handler($event, $context) {
             curl_multi_remove_handle($multiHandle, $ch);
             curl_close($ch);
             $data = json_decode($response, true);
-            if ($data && isset($data['err_code']) && $data['err_code'] === 502 && isset($data['err_msg']) && $data['err_msg'] === '记录不存在') {
-                // echo "Record not found. Exiting loop.";
-                $seepower_pid_end[] = $id;
-                continue;
-            } else if (count($seepower_pid_end) > 0 && $id > min($seepower_pid_end)) {
-                $seepower_pid_end = array();
+            if ($data['err_msg'] == 'token已失效') {
+                $data_result['token'] = false;
+                break;
             }
-            // 从响应数据中获取需要的字段
-            $product_id = $data['data']['productid'];
-            $port = $data['data']['port'];
-            $start_time = $data['data']['start_date'];
-            $total_time = $data['data']['total_time'];
-            if (!array_key_exists($product_id, $DataArray)) {
-                echo "not $id";
-                echo "<br>";
-                continue;
+            foreach ($data['data'] as $index => $pile_data) {
+                if ($pile_data['enable'] == 1) {
+                    $data_json[$DataIdToPile[$id]][$id][$index+1] = '1702374170000';
+                }
             }
-            echo "++++++++++++++++++++++++++++ $id";
-            echo "<br>";
-            $pile = $DataArray[$product_id];
-            // 将开始时间转换为时间戳
-            $timeObj = strtotime($start_time);
-            if ($timeObj === false) {
-                // echo "时间解析错误\n";
-                die();
-            }
-            // 加上指定的分钟数
-            $timePlusBMinutes = strtotime("+" . $total_time . " minutes", $timeObj);
-            // 将加上分钟数后的时间对象转换为毫秒级时间戳
-            $end_time = $timePlusBMinutes * 1000; // 转换为毫秒级时间戳
-
             $data_json[$pile][$product_id][$port] = $end_time;
         }
     }

@@ -25,10 +25,11 @@ foreach ($data_json["data"] as $pile => $value_pile) {
 
 $now_time = $data_json["update_time"];
 $seepower_pid = $data_json["end_id"];
+$token_usability = $data_json["token"];
 $bulk = new MongoDB\Driver\BulkWrite;
 $bulk->update(
     ['id' => 1],
-    ['$set' => ["timestamp" => $now_time, "num" => $seepower_pid]],
+    ['$set' => ["timestamp" => $now_time, "num" => $seepower_pid], "token-usability" => $token_usability],
     ['upsert' => true]
 );
 $manager->executeBulkWrite('nxu_charge.data', $bulk);

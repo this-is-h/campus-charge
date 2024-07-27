@@ -32,7 +32,7 @@ function data_start($number) {
     return $ch;
 }
 
-function data_status($number, $token, $secret) {
+function data_status($number, $token, $Secret) {
     // 服务器禁止使用
     // global $token;
     $url = "https://h5.2ye.cn/api/charger/port?productid=" . $number;
@@ -42,7 +42,7 @@ function data_status($number, $token, $secret) {
         'Content-Length: 0',
         'tls: ' . floor(microtime(true) * 1000), // Unix timestamp in milliseconds
         'Accept: application/json, text/plain, */*',
-        'clientid: ' . $secret['clientid'], //自行从官方接口爬取 clientid
+        'clientid: ' . $Secret['clientid'], //自行从官方接口爬取 clientid
         'token: ' .  $token,
         'User-Agent: Mozilla/5.0 (Linux; Android 12; ELS-AN00 Build/HUAWEIELS-AN00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4435 MMWEBSDK/20230202 Mobile Safari/537.36 MMWEBID/9699 MicroMessenger/8.0.33.2320(0x28002151) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64',
         'Origin: https://h5.2ye.cn',
@@ -81,12 +81,14 @@ function handler($event, $context) {
 
     $seepower_pid_start = 0;
 
-    $filter = [];
-    $options = []; 
+    $filter = ["id" => 1];
+    $options = [];
+    $query = new MongoDB\Driver\Query($filter, $options);
     $documents = $manager->executeQuery('nxu_charge.data', $query);
     foreach($documents as $document){
         $document = json_decode(json_encode($document),true);
         $seepower_pid_start = $document['num'];
+        $token = $document['token'];
     }
     echo $seepower_pid_start;
     echo "<br>";
@@ -168,14 +170,14 @@ function handler($event, $context) {
             $port = $data['data']['port'];
             $start_time = $data['data']['start_date'];
             $total_time = $data['data']['total_time'];
-            if (!array_key_exists($product_id, $DataArray)) {
+            if (!array_key_exists($product_id, $DataIdToPile)) {
                 echo "not $id";
                 echo "<br>";
                 continue;
             }
             echo "++++++++++++++++++++++++++++ $id";
             echo "<br>";
-            $pile = $DataArray[$product_id];
+            $pile = $DataIdToPile[$product_id];
             // 将开始时间转换为时间戳
             $timeObj = strtotime($start_time);
             if ($timeObj === false) {
@@ -191,7 +193,83 @@ function handler($event, $context) {
         }
     }
 
+    $id_num = 0;
+    $total_num = count($DataTotalId);
+    echo "<br>";
+    while (true) {
+        if ($token == false) {
+            break;
+        }
+        echo "<br>";
+        while (true) {
+            if ($id_num > $total_num) {
+                break;
+            }
+            $product_id = $DataTotalId[$id_num];
+            $ch_now = data_status($product_id, $token, $Secret);
+            $curlHandles[$product_id] = $ch_now;
+            curl_multi_add_handle($multiHandle, $ch_now);
+            echo "add $product_id";
+            echo "<br>";
+            if (count($curlHandles) >= 15) {
+                break;
+            }
+            $id_num++;
+        }
+        if (count($curlHandles) == 0) {
+            break;
+        }
+        // 执行多个 cURL 句柄
+        echo "run";
+        echo "<br>";
+        $running = null;
+        do {
+            curl_multi_exec($multiHandle, $running);
+            curl_multi_select($multiHandle); // 等待I/O事件
+        } while ($running > 0);
+        echo "done";
+        echo "<br>";
+
+        foreach ($curlHandles as $id => $ch) {
+            unset($curlHandles[$id]);
+            // // 检查请求是否出错
+            // $curlError = curl_error($ch);
+            $response = curl_multi_getcontent($ch);
+            if (empty($response)) {
+                // 处理出错的情况
+                echo "error $id";
+                echo "<br>";
+                // 关闭出错的句柄
+                curl_multi_remove_handle($multiHandle, $ch);
+                curl_close($ch);
+                
+                // 重新创建句柄并添加到多句柄中
+                $newCh = data_status($id, $token, $Secret);
+                
+                $curlHandles[$id] = $newCh;
+                curl_multi_add_handle($multiHandle, $newCh);
+                echo "retry $id";
+                echo "<br>";
+                continue;
+            }
+            echo "ok $id";
+            echo "<br>";
+            curl_multi_remove_handle($multiHandle, $ch);
+            curl_close($ch);
+            $data = json_decode($response, true);
+            if ($data['err_msg'] == 'token已失效') {
+                $token = false;
+                break;
+            }
+            foreach ($data['data'] as $index => $pile_data) {
+                if ($pile_data['enable'] == 1) {
+                    $data_json[$DataIdToPile[$id]][$id][$index+1] = '1702374170000';
+                }
+            }
+        }
+    }
     var_dump($data_json);
+    echo json_encode($data_json);
 
     foreach ($data_json as $pile => $value_pile) {
         $bulk = new MongoDB\Driver\BulkWrite;
