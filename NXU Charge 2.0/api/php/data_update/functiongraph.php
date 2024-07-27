@@ -32,7 +32,7 @@ function data_start($number) {
     return $ch;
 }
 
-function data_status($number, $token, $secret) {
+function data_status($number, $token) {
     // 服务器禁止使用
     // global $token;
     $url = "https://h5.2ye.cn/api/charger/port?productid=" . $number;
@@ -42,7 +42,7 @@ function data_status($number, $token, $secret) {
         'Content-Length: 0',
         'tls: ' . floor(microtime(true) * 1000), // Unix timestamp in milliseconds
         'Accept: application/json, text/plain, */*',
-        'clientid: ' . $secret['clientid'], //自行从官方接口爬取 clientid
+        'clientid: tffGh78Yurte54t5b',
         'token: ' .  $token,
         'User-Agent: Mozilla/5.0 (Linux; Android 12; ELS-AN00 Build/HUAWEIELS-AN00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4435 MMWEBSDK/20230202 Mobile Safari/537.36 MMWEBID/9699 MicroMessenger/8.0.33.2320(0x28002151) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64',
         'Origin: https://h5.2ye.cn',
@@ -70,6 +70,7 @@ function data_status($number, $token, $secret) {
 }
 
 function handler($event, $context) {
+    require("../total/data.php");
     require("../total/data.php");
 
     date_default_timezone_set('Asia/Shanghai');
@@ -113,10 +114,104 @@ function handler($event, $context) {
     while (true) {
         echo "<br>";
         while (true) {
-            if (count($seepower_pid_end) > 0 || $seepower_pid - $seepower_pid_start >= 11500) {
+            if (count($seepower_pid_end) > 0 || $seepower_pid - $seepower_pid_start >= 500) {
                 break;
             }
             $ch_now = data_start($seepower_pid);
+            $curlHandles[$seepower_pid] = $ch_now;
+            curl_multi_add_handle($multiHandle, $ch_now);
+            echo "add $seepower_pid";
+            echo "<br>";
+            if (count($curlHandles) >= 15) {
+                break;
+            }
+            $seepower_pid++;
+        }
+        if (count($curlHandles) == 0) {
+            break;
+        }
+        // 执行多个 cURL 句柄
+        echo "run";
+        echo "<br>";
+        $running = null;
+        do {
+            curl_multi_exec($multiHandle, $running);
+            curl_multi_select($multiHandle); // 等待I/O事件
+        } while ($running > 0);
+        echo "done";
+        echo "<br>";
+
+        foreach ($curlHandles as $id => $ch) {
+            unset($curlHandles[$id]);
+            // // 检查请求是否出错
+            // $curlError = curl_error($ch);
+            $response = curl_multi_getcontent($ch);
+            if (empty($response)) {
+                // 处理出错的情况
+                echo "error $id";
+                echo "<br>";
+                // 关闭出错的句柄
+                curl_multi_remove_handle($multiHandle, $ch);
+                curl_close($ch);
+                
+                // 重新创建句柄并添加到多句柄中
+                $newCh = data_start($id); // 使用相同的 URL 重新创建句柄
+                
+                $curlHandles[$id] = $newCh;
+                curl_multi_add_handle($multiHandle, $newCh);
+                echo "retry $id";
+                echo "<br>";
+                continue;
+            }
+            echo "ok $id";
+            echo "<br>";
+            curl_multi_remove_handle($multiHandle, $ch);
+            curl_close($ch);
+            $data = json_decode($response, true);
+            if ($data && isset($data['err_code']) && $data['err_code'] === 502 && isset($data['err_msg']) && $data['err_msg'] === '记录不存在') {
+                // echo "Record not found. Exiting loop.";
+                $seepower_pid_end[] = $id;
+                continue;
+            } else if (count($seepower_pid_end) > 0 && $id > min($seepower_pid_end)) {
+                $seepower_pid_end = array();
+            }
+            // 从响应数据中获取需要的字段
+            $product_id = $data['data']['productid'];
+            $port = $data['data']['port'];
+            $start_time = $data['data']['start_date'];
+            $total_time = $data['data']['total_time'];
+            if (!array_key_exists($product_id, $DataArray)) {
+                echo "not $id";
+                echo "<br>";
+                continue;
+            }
+            echo "++++++++++++++++++++++++++++ $id";
+            echo "<br>";
+            $pile = $DataArray[$product_id];
+            // 将开始时间转换为时间戳
+            $timeObj = strtotime($start_time);
+            if ($timeObj === false) {
+                // echo "时间解析错误\n";
+                die();
+            }
+            // 加上指定的分钟数
+            $timePlusBMinutes = strtotime("+" . $total_time . " minutes", $timeObj);
+            // 将加上分钟数后的时间对象转换为毫秒级时间戳
+            $end_time = $timePlusBMinutes * 1000; // 转换为毫秒级时间戳
+
+            $data_json[$pile][$product_id][$port] = $end_time;
+        }
+    }
+
+    $id_num = 0;
+    while (true) {
+        echo "<br>";
+        $total_num = count($DataTotalId);
+        while (true) {
+            if ($id_num > $total_num) {
+                break;
+            }
+            $ch_now = data_status($DataTotalId[$id_num]);
             $curlHandles[$seepower_pid] = $ch_now;
             curl_multi_add_handle($multiHandle, $ch_now);
             echo "add $seepower_pid";

@@ -10,11 +10,13 @@ $documents = $manager->executeQuery('nxu_charge.data', $query);
 foreach($documents as $document){
     $document = json_decode(json_encode($document),true);
     $seepower_pid = $document['num'];
+    $token = $document['token'];
 }
 $result = array(
     "code" => 200,
     "succesful" => true,
     "id" => $seepower_pid,
+    "token" => $token,
 );
 echo json_encode($result);
 ?>
