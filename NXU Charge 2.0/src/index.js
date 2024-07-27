@@ -107,7 +107,8 @@ function getData() {
                         error.content = result_array["msg"];
                         error.type = "normal";
                         error.isError = true;
-                        pile_data_loading.value = true;false;
+                        pile_data_loading.value = false;
+                        return;
                     }
                 } catch(e) {
                     error.msg = "data";
@@ -115,6 +116,7 @@ function getData() {
                     error.type = "normal";
                     console.error("Error：" + e);
                     pile_data_loading.value = false;
+                    return;
                 }
             }
         }
