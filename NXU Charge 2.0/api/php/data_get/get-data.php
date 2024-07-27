@@ -6,19 +6,19 @@ function main($Secret, $Data, $Get) {
     $time = microtime(true);
     $result = array(
         "code" => 200,
-        "succesful" => true,
+        "successful" => true,
     );
 
     if (empty($Get['pile'])) {
         $result["code"] = 300;
-        $result["succesful"] = false;
+        $result["successful"] = false;
         $result["error_msg"] = "pile参数为空";
         die(json_encode($result));
     }
     $pile = $Get['pile'];
     if (!array_key_exists($pile, $Data["DataMap"])) {
         $result["code"] = 300;
-        $result["succesful"] = false;
+        $result["successful"] = false;
         $result["error_msg"] = "pile参数有误";
         die(json_encode($result));
     }

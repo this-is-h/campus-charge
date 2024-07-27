@@ -14,7 +14,7 @@ function main($Secret) {
     }
     $result = array(
         "code" => 200,
-        "succesful" => true,
+        "successful" => true,
         "id" => $seepower_pid,
         "token" => $token,
     );
