@@ -30,4 +30,11 @@ $DataTotalPile = array();
 foreach ($DataMap as $pile => $value) {
     $DataTotalPile[] = $pile;
 }
+
+$Data = array(
+    "DataMap" => $DataMap,
+    "DataIdToPile" => $DataIdToPile,
+    "DataTotalId" => $DataTotalId,
+    "DataTotalPile" => $DataTotalPile
+);
 ?>

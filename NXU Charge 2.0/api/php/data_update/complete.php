@@ -263,7 +263,7 @@ function handler($event, $context) {
             }
             foreach ($data['data'] as $index => $pile_data) {
                 if ($pile_data['enable'] == 1) {
-                    $data_json[$DataIdToPile[$id]][$id][$index+1] = '1702374170000';
+                    $data_json[$DataIdToPile[$id]][$id][$index+1] = 1702374170000;
                 }
             }
         }

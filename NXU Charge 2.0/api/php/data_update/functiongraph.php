@@ -122,7 +122,7 @@ function handler($event, $context) {
             curl_multi_add_handle($multiHandle, $ch_now);
             echo "add $seepower_pid";
             echo "<br>";
-            if (count($curlHandles) >= 15) {
+            if (count($curlHandles) >= 20) {
                 break;
             }
             $seepower_pid++;
@@ -222,7 +222,7 @@ function handler($event, $context) {
             curl_multi_add_handle($multiHandle, $ch_now);
             echo "add $product_id";
             echo "<br>";
-            if (count($curlHandles) >= 15) {
+            if (count($curlHandles) >= 20) {
                 break;
             }
             $id_num++;
@@ -274,7 +274,7 @@ function handler($event, $context) {
             }
             foreach ($data['data'] as $index => $pile_data) {
                 if ($pile_data['enable'] == 1) {
-                    $data_json[$DataIdToPile[$id]][$id][$index+1] = '1702374170000';
+                    $data_json[$DataIdToPile[$id]][$id][$index+1] = 1702374170000;
                 }
             }
         }
@@ -284,35 +284,38 @@ function handler($event, $context) {
     $data_result["update_time"] = round(microtime(true) * 1000);
     $data_result["end_id"] = min($seepower_pid_end);
 
-    var_dump($data_result);
-    echo json_encode($data_result);
+    // var_dump($data_result);
+    // echo json_encode($data_result);
+    
 
-    $curl = curl_init();
-    curl_setopt_array($curl, [
-        CURLOPT_URL => "https://nxu-charge.thisish.cn/api/update-data",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => json_encode($data_result),
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_SSL_VERIFYHOST => false,
-        CURLOPT_HTTPHEADER => [
-            "content-type: application/json"
-        ],
-    ]);
-    $response = curl_exec($curl);
-    $err = curl_error($curl);
-    curl_close($curl);
-    if ($err) {
-        echo "update failed" . $err;
-        return;
-    } else {
-        echo $response;
-        echo "update succesful";
-    }
+    echo microtime(true) - $time . '<br>';
+
+    // $curl = curl_init();
+    // curl_setopt_array($curl, [
+    //     CURLOPT_URL => "https://nxu-charge.thisish.cn/api/update-data",
+    //     CURLOPT_RETURNTRANSFER => true,
+    //     CURLOPT_ENCODING => "",
+    //     CURLOPT_MAXREDIRS => 10,
+    //     CURLOPT_TIMEOUT => 30,
+    //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    //     CURLOPT_CUSTOMREQUEST => "POST",
+    //     CURLOPT_POSTFIELDS => json_encode($data_result),
+    //     CURLOPT_SSL_VERIFYPEER => false,
+    //     CURLOPT_SSL_VERIFYHOST => false,
+    //     CURLOPT_HTTPHEADER => [
+    //         "content-type: application/json"
+    //     ],
+    // ]);
+    // $response = curl_exec($curl);
+    // $err = curl_error($curl);
+    // curl_close($curl);
+    // if ($err) {
+    //     echo "update failed" . $err;
+    //     return;
+    // } else {
+    //     echo $response;
+    //     echo "update succesful";
+    // }
 }
 
 

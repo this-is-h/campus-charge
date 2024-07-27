@@ -82,7 +82,7 @@ function getData() {
     pile_data_loading.value = true;
     updateCountdownTime.value = 10000;
     var xhr = createXHR();
-    let data_url = '/api/data_get/index.php';
+    let data_url = '/api/get-data';
     if (DATA_URL != '') {
         data_url = DATA_URL;
     }
