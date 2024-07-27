@@ -202,7 +202,7 @@ function handler($event, $context) {
         }
         echo "<br>";
         while (true) {
-            if ($id_num > $total_num) {
+            if ($id_num >= $total_num) {
                 break;
             }
             $product_id = $DataTotalId[$id_num];

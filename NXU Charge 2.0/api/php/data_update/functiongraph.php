@@ -180,14 +180,14 @@ function handler($event, $context) {
             $port = $data['data']['port'];
             $start_time = $data['data']['start_date'];
             $total_time = $data['data']['total_time'];
-            if (!array_key_exists($product_id, $DataArray)) {
+            if (!array_key_exists($product_id, $DataIdToPile)) {
                 echo "not $id";
                 echo "<br>";
                 continue;
             }
             echo "++++++++++++++++++++++++++++ $id";
             echo "<br>";
-            $pile = $DataArray[$product_id];
+            $pile = $DataIdToPile[$product_id];
             // 将开始时间转换为时间戳
             $timeObj = strtotime($start_time);
             if ($timeObj === false) {
@@ -213,7 +213,7 @@ function handler($event, $context) {
         }
         echo "<br>";
         while (true) {
-            if ($id_num > $total_num) {
+            if ($id_num >= $total_num) {
                 break;
             }
             $product_id = $DataTotalId[$id_num];
@@ -225,7 +225,7 @@ function handler($event, $context) {
             if (count($curlHandles) >= 15) {
                 break;
             }
-            $seepower_pid++;
+            $id_num++;
         }
         if (count($curlHandles) == 0) {
             break;
@@ -277,7 +277,6 @@ function handler($event, $context) {
                     $data_json[$DataIdToPile[$id]][$id][$index+1] = '1702374170000';
                 }
             }
-            $data_json[$pile][$product_id][$port] = $end_time;
         }
     }
 

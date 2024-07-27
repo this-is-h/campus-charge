@@ -29,7 +29,7 @@ $token_usability = $data_json["token"];
 $bulk = new MongoDB\Driver\BulkWrite;
 $bulk->update(
     ['id' => 1],
-    ['$set' => ["timestamp" => $now_time, "num" => $seepower_pid], "token-usability" => $token_usability],
+    ['$set' => ["timestamp" => $now_time, "num" => $seepower_pid, "token-usability" => $token_usability]],
     ['upsert' => true]
 );
 $manager->executeBulkWrite('nxu_charge.data', $bulk);
