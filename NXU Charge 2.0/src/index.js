@@ -112,9 +112,9 @@ function getData() {
                     }
                 } catch(e) {
                     error.msg = "data";
-                    error.isError = true;
                     error.type = "normal";
                     console.error("Error：" + e);
+                    error.isError = true;
                     pile_data_loading.value = false;
                     return;
                 }
