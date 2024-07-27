@@ -94,9 +94,9 @@ function getData() {
                 let result_array;
                 try {
                     result_array = JSON.parse(xhr.responseText);
-                    if (result_array["code"] == 200 && result_array["success"] == true) {
+                    if (result_array["code"] == 200 && result_array["successful"] == true) {
                         console.log(result_array);
-                        if (result_array["warning"] == true && result_array["warning_msg"] == 'token过期') {
+                        if (!result_array["token"]) {
                             error.msg = "token";
                             error.type = "non-refresh";
                             error.isError = true;
