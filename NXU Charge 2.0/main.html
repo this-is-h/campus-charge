@@ -189,7 +189,7 @@
                                         目前由 <code>华为云函数工作流服务</code> 托管数据更新任务。
                                     </li>
                                     <li>
-                                        目前使用 <code>db4free.net</code> 提供的免费 MySQL 数据库。
+                                        目前使用 <code>MongoDB Atlas</code> 提供的免费 MongoDB 数据库。
                                     </li>
                                 </ol>
                             </template>
@@ -247,6 +247,18 @@
             <van-tab title="更新日志" name="update">
                 <div id="update" class="mdui-prose">
                     <van-collapse v-model="updateActiveName" accordion>
+                        <van-collapse-item title="V 1.3.0" label="(2024-7-27)" name="18" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    之前的更新拖了太久了，还没有更新什么，放假回来就直接上手更换数据库了😳😳<br><br>
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>更改数据库为mongodb</li>
+                                        <li>规范目录结构</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
                         <van-collapse-item title="V 1.2.2" label="(2024-3-31)" name="17" style="font-weight: bold;">
                             <div class="update-item">
                                 <ul class="mdui-list">
@@ -556,7 +568,7 @@
                 <div id="about">
                     <p class="item-title" style="padding-top: 20px;">特别鸣谢</p>
                     <van-cell-group inset>
-                        <van-cell id="MDUIthanks" title="三千許." label="王总非让我加的" center>
+                        <van-cell title="三千許." label="王总非让我加的" center>
                             <template #icon >
                                 <van-image
                                     round
@@ -611,6 +623,18 @@
                         <van-cell title="Watt Toolkit" label="「Watt Toolkit」是一个开源跨平台的多功能 Steam 工具箱。" url="https://steampp.net/" center is-link>
                             <template #icon>
                                 <img style="margin-right: 10px;width: 24px;" src="https://steampp.net/svg/logo.png" />
+                            </template>
+                        </van-cell>
+                        <van-cell title="Vercel" label="Vercel provides the developer tools and cloud infrastructure to build, scale, and secure a faster, more personalized web." url="https://vercel.com/" center is-link>
+                            <template #icon>
+                                <svg style="margin-right: 10px;" aria-label="Vercel Logo" fill="var(--geist-foreground)" class="logo" viewBox="0 0 96 96" width="24" height="24">
+                                    <path d="M37.59.25l36.95 64H.64l36.95-64z"></path>
+                                </svg>
+                            </template>
+                        </van-cell>
+                        <van-cell title="MongoDB Atlas" label="适用于任何使用场景的开发者数据平台。" url="https://www.mongodb.com/zh-cn/atlas" center is-link>
+                            <template #icon>
+                                <img style="margin-right: 10px;width: 24px;" src="https://www.mongodb.com/assets/images/global/favicon.ico" />
                             </template>
                         </van-cell>
                     </van-cell-group>

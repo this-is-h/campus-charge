@@ -107,23 +107,21 @@ function getData() {
                         error.content = result_array["msg"];
                         error.type = "normal";
                         error.isError = true;
+                        pile_data_loading.value = true;false;
                     }
                 } catch(e) {
                     error.msg = "data";
                     error.isError = true;
                     error.type = "normal";
                     console.error("Error：" + e);
+                    pile_data_loading.value = false;
                 }
-            } else {
-                error.msg = "data";
-                error.type = "normal";
-                error.isError = true;
             }
-        } else {
-            error.msg = "data";
-            error.type = "normal";
-            error.isError = true;
         }
+        error.msg = "data";
+        error.type = "normal";
+        error.isError = true;
+        pile_data_loading.value = false;
     }
 }
 
@@ -146,7 +144,7 @@ function dataProcessing(data) {
     } catch(e) {
         return;
     }
-    const timestamp = parseInt(data.timestamp); // 将字符串转换为数字
+    const timestamp = parseInt(data.time); // 将字符串转换为数字
     const date = new Date(timestamp); // 使用 Date 对象转换时间戳
     // 获取各种时间信息并补零
     const year = date.getFullYear();
