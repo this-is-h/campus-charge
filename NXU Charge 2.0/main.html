@@ -216,10 +216,10 @@
                             <div class="qa-item">
                                 <p>
                                     受限于免费服务资源，结合各时间段可能的用量，数据更新频率为：<br>
-                                    <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">00:00 - 05:59 : 5 min</mdui-chip><br>
-                                    <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">06:00 - 06:59 : 3 min</mdui-chip><br>
+                                    <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">00:00 - 05:59 : 10 min</mdui-chip><br>
+                                    <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">06:00 - 06:59 : 5 min</mdui-chip><br>
                                     <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">07:00 - 22:59 : 1 min</mdui-chip><br>
-                                    <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">23:00 - 23:59 : 3 min</mdui-chip><br>
+                                    <mdui-chip style="border-color: var(--van-collapse-item-content-text-color);color: var(--van-collapse-item-content-text-color);height: auto;">23:00 - 23:59 : 5 min</mdui-chip><br>
                                     我们尽量保证数据更新的稳定性，但可能受限于服务器，部分时候可能缺少更新数据。
                                 </p>
                             </div>
@@ -255,6 +255,10 @@
                                     <ol>
                                         <li>更改数据库为mongodb</li>
                                         <li>规范目录结构</li>
+                                    </ol>
+                                    <van-tag type="success">修复</van-tag>
+                                    <ol>
+                                        <li>空闲充电口显示问题</li>
                                     </ol>
                                 </ul>
                             </div>
@@ -597,7 +601,7 @@
                         </van-cell>
                         <van-cell title="MDUI" label="使用 Web Components 实现，遵循 Material You 设计规范的 Web 前端组件库" url="https://www.mdui.org/" center is-link>
                             <template #icon>
-                                <img style="margin-right: 10px;width: 24px;" src="./mdui.png" />
+                                <img style="margin-right: 10px;width: 24px;" src="/mdui.png" />
                             </template>
                         </van-cell>
                         <van-cell title="InfinityFree" label="InfinityFree is an independent free hosting initiative, dedicated to providing reliable free hosting services." url="https://www.infinityfree.com/" center is-link>
