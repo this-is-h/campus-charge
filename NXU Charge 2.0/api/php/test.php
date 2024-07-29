@@ -1,6 +1,7 @@
 <?php
 require("total/secret.php");
 date_default_timezone_set('Asia/Shanghai');
+ini_set("output_buffering", "0");
 
 ob_end_clean();
 header("Connection: close");
