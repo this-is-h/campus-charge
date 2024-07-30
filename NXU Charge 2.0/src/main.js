@@ -117,6 +117,7 @@ const main = createApp({
     setup() {
         const active = ref("about");
         var option = getQueryVariable("page");
+        console.log(option);
         if (["about","qa","update", "thanks"].includes(option)){
             active.value = option;
         }
