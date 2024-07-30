@@ -105,7 +105,7 @@ app.mount('#config-provider');
 const main = createApp({
     setup() {
         const active = ref("about");
-        var option = window.location.pathname.replace("/main/");
+        var option = window.location.pathname.replace("/main/", "");
         if (["about","qa","update", "thanks"].includes(option)){
             active.value = option;
         }
