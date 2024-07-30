@@ -70,13 +70,13 @@ function createXHR () {
 }
 
 function getSecondsDifference(timestamp) {
-    if (timestamp <= 1) {
-        return timestamp;
-    }
     const currentTime = Date.now(); // 当前时间的时间戳（单位：秒）
-    const inputTime = timestamp; // 输入时间的时间戳（单位：秒）
-    const difference = inputTime - currentTime; // 计算时间差（单位：秒）
-    return difference;
+    const inputTime = timestamp["time"]; // 输入时间的时间戳（单位：秒）
+    var difference = 0;
+    if (inputTime != undefined) {
+        difference = inputTime - currentTime; // 计算时间差（单位：秒）
+    }
+    return {"enable": timestamp["enable"], "time": difference};
 }
 
 function getData() {
