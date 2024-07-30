@@ -8,7 +8,7 @@
     },
     "cleanUrls": true,
     "rewrites": [
-        { "source": "/main/:page*", "destination": "/main?page=:page*" },
+        { "source": "/main/:page", "destination": "/main" },
         { "source": "/api/:match*", "destination": "/api/php/:match*" },
         { "source": "/([^/]*)", "destination": "/error/403", "statusCode": 403 }
     ],
