@@ -247,6 +247,27 @@
             <van-tab title="更新日志" name="update">
                 <div id="update" class="mdui-prose">
                     <van-collapse v-model="updateActiveName" accordion>
+                        <van-collapse-item title="V 1.3.2" label="(2024-7-30)" name="19" style="font-weight: bold;">
+                            <div class="update-item">
+                                <ul class="mdui-list">
+                                    <van-tag type="primary">新增</van-tag>
+                                    <ol>
+                                        <li>更新数据的数据校验</li>
+                                        <li>更新数据的日志记录</li>
+                                    </ol>
+                                    <van-tag type="warning">优化</van-tag>
+                                    <ol>
+                                        <li>数据结构</li>
+                                        <li>数据更新频率</li>
+                                        <li>规范 github 提交信息</li>
+                                    </ol>
+                                    <van-tag type="success">修复</van-tag>
+                                    <ol>
+                                        <li>出错后仍报超时错误的问题</li>
+                                    </ol>
+                                </ul>
+                            </div>
+                        </van-collapse-item>
                         <van-collapse-item title="V 1.3.0" label="(2024-7-27)" name="18" style="font-weight: bold;">
                             <div class="update-item">
                                 <ul class="mdui-list">
