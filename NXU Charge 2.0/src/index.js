@@ -70,6 +70,9 @@ function createXHR () {
 }
 
 function getSecondsDifference(timestamp) {
+    if (timestamp <= 1) {
+        return timestamp;
+    }
     const currentTime = Date.now(); // 当前时间的时间戳（单位：秒）
     const inputTime = timestamp; // 输入时间的时间戳（单位：秒）
     const difference = inputTime - currentTime; // 计算时间差（单位：秒）

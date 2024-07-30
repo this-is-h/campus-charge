@@ -51,14 +51,19 @@ function main($Secret, $data) {
         $bulk = new MongoDB\Driver\BulkWrite;
         foreach ($value_pile as $id => $value_id) {
             foreach ($value_id as $port => $time) {
-                // if (!is_numeric($time)) {
-                //     return;
-                // }
-                $bulk->update(
-                    ['productid' => $id],
-                    ['$set' => [$port => $time]],
-                    ['upsert' => true]
-                );
+                if (empty($time["time"])) {
+                    $bulk->update(
+                        ['productid' => $id],
+                        ['$set' => [$port . ".enable" => $time["enable"]]],
+                        ['upsert' => true]
+                    );
+                } else {
+                    $bulk->update(
+                        ['productid' => $id],
+                        ['$set' => [$port => $time]],
+                        ['upsert' => true]
+                    );
+                }
             }
         }
         $manager->executeBulkWrite('nxu_charge.' . $pile, $bulk);

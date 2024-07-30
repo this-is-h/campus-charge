@@ -1,7 +1,6 @@
 <?php
 require("total/secret.php");
 date_default_timezone_set('Asia/Shanghai');
-ini_set("output_buffering", "0");
 
 ob_end_clean();
 header("Connection: close");
@@ -19,7 +18,7 @@ flush();
 // }
 ignore_user_abort(true);// 在关闭连接后，继续运行php脚本
 
-sleep(5);
+sleep(50);
 $mongo_url = "mongodb+srv://" . $Secret["mongodb.username"] . ":" . $Secret["mongodb.password"] . "@" . $Secret["mongodb.server"] . "/?retryWrites=true&w=majority&appName=h";
 $manager = new MongoDB\Driver\Manager($mongo_url);
 
