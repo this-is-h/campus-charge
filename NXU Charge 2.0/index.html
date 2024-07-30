@@ -177,7 +177,7 @@
                                     <div class="port-message">
                                         <p>端口 {{ (index1 - 1 == 0) ? (index2 + 1) : (index2 + 6) }}</p>
                                         <p class="status" v-if="port.time > 0">
-                                            <van-count-down style="color: grey" :value="port" :time="port" @finish="onFinish(index + '-' + index1 + '-' + index2)" />
+                                            <van-count-down style="color: grey" :value="port.time" :time="port.time" @finish="onFinish(index + '-' + index1 + '-' + index2)" />
                                         </p>
                                     </div>
                                     <div class="port-fill" style="width: 0.3em;" v-if="port > 0"></div>
