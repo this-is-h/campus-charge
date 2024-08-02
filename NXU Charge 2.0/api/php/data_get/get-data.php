@@ -34,7 +34,20 @@ function main($Secret, $Data, $Get) {
         $document = json_decode(json_encode($document),true);
         $result["time"] = $document['timestamp'];
         $result["token"] = $document['token-usability'];
+        if (empty($document['visits'])) {
+            $visits = 0;
+        } else {
+            $visits = $document['visits'];
+        }
     }
+
+    $bulk = new MongoDB\Driver\BulkWrite;
+    $bulk->update(
+        ['id' => 1],
+        ['$set' => ["visits" => $visits + 1]],
+        ['upsert' => true]
+    );
+    $manager->executeBulkWrite('nxu_charge.data', $bulk);
 
     $result_data = array();
     foreach ($Data["DataMap"][$Get['pile']] as $productid) {
