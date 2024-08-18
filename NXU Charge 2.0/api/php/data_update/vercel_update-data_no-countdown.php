@@ -30,10 +30,6 @@ function main($Secret, $data) {
         outputLog($manager, "error", "数据库处于写入状态，终止程序", $data_json);
         return;
     }
-    if (!is_numeric($data_json["end_id"])) {
-        outputLog($manager, "error", "传入 end_id 有误，终止程序", $data_json);
-        return;
-    }
     if ($data_json["update_time"] < $update_time) {
         return;
     }
