@@ -66,12 +66,11 @@ function main($Secret, $data) {
     }
     
     $now_time = $data_json["update_time"];
-    $seepower_pid = $data_json["end_id"];
     $token_usability = $data_json["token"];
     $bulk = new MongoDB\Driver\BulkWrite;
     $bulk->update(
         ['id' => 1],
-        ['$set' => ["timestamp" => $now_time, "num" => $seepower_pid, "token-usability" => $token_usability, "writing" => false]],
+        ['$set' => ["timestamp" => $now_time, "token-usability" => $token_usability, "writing" => false]],
         ['upsert' => true]
     );
     $manager->executeBulkWrite('nxu_charge.data', $bulk);
