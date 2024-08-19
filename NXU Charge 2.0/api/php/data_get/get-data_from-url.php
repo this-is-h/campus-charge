@@ -88,7 +88,7 @@ function main($Secret, $Data, $Get) {
         }
         // echo "<br>";
         foreach ($total_num as $product_id) {
-            $ch_now = data_status($product_id, $token);
+            $ch_now = dataStatus($product_id, $token);
             $curlHandles[$product_id] = $ch_now;
             $curlRetry[$product_id] = 0;
             curl_multi_add_handle($multiHandle, $ch_now);
@@ -128,7 +128,7 @@ function main($Secret, $Data, $Get) {
 
                 $curlRetry[$id]++;
                 // 重新创建句柄并添加到多句柄中
-                $newCh = data_status($id, $token); // 使用相同的 URL 重新创建句柄                
+                $newCh = dataStatus($id, $token); // 使用相同的 URL 重新创建句柄                
                 $curlHandles[$id] = $newCh;
                 curl_multi_add_handle($multiHandle, $newCh);
                 // echo "retry $id";
