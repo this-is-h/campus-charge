@@ -56,6 +56,7 @@ function main($Secret, $Data, $Get) {
     $result = array(
         "code" => 200,
         "successful" => true,
+        "token" => true,
     );
 
     if (empty($Get['pile'])) {
@@ -72,7 +73,6 @@ function main($Secret, $Data, $Get) {
         die(json_encode($result));
     }
 
-    $data_result['token'] = true;
     $data_json = array();
     $token = getToken($Secret);
     $total_num = $Data["DataMap"][$pile];
@@ -88,7 +88,7 @@ function main($Secret, $Data, $Get) {
     // echo "<br><br><br><br>";
     $i=0;
     while (true) {
-        if (!$data_result['token']) {
+        if (!$result['token']) {
             break;
         }
         // echo "<br>";
@@ -125,7 +125,7 @@ function main($Secret, $Data, $Get) {
         }
         $data = json_decode($response, true);
         if ($data['err_msg'] == 'token已失效') {
-            $data_result['token'] = false;
+            $result['token'] = false;
             break;
         }
         foreach ($data['data'] as $index => $pile_data) {
@@ -135,5 +135,6 @@ function main($Secret, $Data, $Get) {
         $i++;
     }
     $result["data"] = $data_json;
+    $result["time"] = round(microtime(true) * 1000);
     echo json_encode($result);
 }

@@ -56,6 +56,7 @@ function main($Secret, $Data, $Get) {
     $result = array(
         "code" => 200,
         "successful" => true,
+        "token" => true,
     );
 
     if (empty($Get['pile'])) {
@@ -79,7 +80,6 @@ function main($Secret, $Data, $Get) {
     $token = getToken($Secret);
     $total_num = $Data["DataMap"][$pile];
 
-    $data_result['token'] = true;
     $data_json = array();
 
     foreach ($total_num as $product_id) {
@@ -92,7 +92,7 @@ function main($Secret, $Data, $Get) {
     }
     // echo "<br><br><br><br>";
     while (true) {
-        if (!$data_result['token']) {
+        if (!$result['token']) {
             break;
         }
         // echo "<br>";
@@ -142,7 +142,7 @@ function main($Secret, $Data, $Get) {
             curl_close($ch);
             $data = json_decode($response, true);
             if ($data['err_msg'] == 'token已失效') {
-                $data_result['token'] = false;
+                $result['token'] = false;
                 break;
             }
             foreach ($data['data'] as $index => $pile_data) {
@@ -152,5 +152,6 @@ function main($Secret, $Data, $Get) {
         }
     }
     $result["data"] = $data_json;
+    $result["time"] = round(microtime(true) * 1000);
     echo json_encode($result);
 }
