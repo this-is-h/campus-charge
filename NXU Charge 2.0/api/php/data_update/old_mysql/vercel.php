@@ -244,7 +244,7 @@ while (!$finish_loop) {
     // 加上指定的分钟数
     $timePlusBMinutes = strtotime("+" . $total_time . " minutes", $timeObj);
     // 将加上分钟数后的时间对象转换为毫秒级时间戳
-    $end_time = $timePlusBMinutes * 1000; // 转换为毫秒级时间戳 
+    $end_time = $timePlusBMinutes * 1000; // 转换为毫秒级时间戳
 
     // 更新数据库（假设数据库连接已建立）
     $query = "UPDATE `$pile` SET `$port` = '$end_time' WHERE `id` = '$product_id'";

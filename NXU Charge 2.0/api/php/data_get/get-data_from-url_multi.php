@@ -72,21 +72,25 @@ function main($Secret, $Data, $Get) {
         die(json_encode($result));
     }
 
-    $data_result['token'] = true;
-    $data_json = array();
-    $token = getToken($Secret);
-    $total_num = $Data["DataMap"][$pile];
+    $multiHandle = curl_multi_init();
     $curlHandles = [];
     $curlRetry = [];
+
+    $token = getToken($Secret);
+    $total_num = $Data["DataMap"][$pile];
+
+    $data_result['token'] = true;
+    $data_json = array();
+
     foreach ($total_num as $product_id) {
         $ch_now = dataStatus($product_id, $token);
         $curlHandles[$product_id] = $ch_now;
         $curlRetry[$product_id] = 0;
+        curl_multi_add_handle($multiHandle, $ch_now);
         // echo "add $product_id";
         // echo "<br>";
     }
     // echo "<br><br><br><br>";
-    $i=0;
     while (true) {
         if (!$data_result['token']) {
             break;
@@ -95,44 +99,57 @@ function main($Secret, $Data, $Get) {
         if (count($curlHandles) == 0) {
             break;
         }
-        $product_id = $total_num[$i];
         // 执行多个 cURL 句柄
         // echo "run";
         // echo "<br>";
-        $ch = $curlHandles[$product_id];
-        $response = curl_exec($ch);
-        $err = curl_error($ch);
-        curl_close($ch);
-        unset($curlHandles[$product_id]);
+        $running = null;
+        do {
+            curl_multi_exec($multiHandle, $running);
+            curl_multi_select($multiHandle); // 等待I/O事件
+        } while ($running > 0);
         // echo "done";
         // echo "<br>";
-        if (empty($response)) {
-            // 处理出错的情况
-            // echo "error $id";
-            // echo "<br>";
-            // 关闭出错的句柄
-            if ($curlRetry[$product_id] > 2) {
+
+        foreach ($curlHandles as $id => $ch) {
+            unset($curlHandles[$id]);
+            // // 检查请求是否出错
+            // $curlError = curl_error($ch);
+            $response = curl_multi_getcontent($ch);
+            if (empty($response)) {
+                // 处理出错的情况
+                // echo "error $id";
+                // echo "<br>";
+                // 关闭出错的句柄
+                curl_multi_remove_handle($multiHandle, $ch);
+                curl_close($ch);
+                
+                if ($curlRetry[$id] > 2) {
+                    continue;
+                }
+
+                $curlRetry[$id]++;
+                // 重新创建句柄并添加到多句柄中
+                $newCh = dataStatus($id, $token); // 使用相同的 URL 重新创建句柄                
+                $curlHandles[$id] = $newCh;
+                curl_multi_add_handle($multiHandle, $newCh);
+                // echo "retry $id";
+                // echo "<br>";
                 continue;
             }
-
-            $curlRetry[$product_id]++;
-            // 重新创建句柄并添加到多句柄中
-            $newCh = dataStatus($product_id, $token); // 使用相同的 URL 重新创建句柄                
-            $curlHandles[$product_id] = $newCh;
-            // echo "retry $id";
+            // echo "ok $id";
             // echo "<br>";
-            continue;
+            curl_multi_remove_handle($multiHandle, $ch);
+            curl_close($ch);
+            $data = json_decode($response, true);
+            if ($data['err_msg'] == 'token已失效') {
+                $data_result['token'] = false;
+                break;
+            }
+            foreach ($data['data'] as $index => $pile_data) {
+                $data_json[$id][$index+1]["enable"] = $pile_data['enable'];
+                $data_json[$id][$index+1]["time"] = 0;
+            }
         }
-        $data = json_decode($response, true);
-        if ($data['err_msg'] == 'token已失效') {
-            $data_result['token'] = false;
-            break;
-        }
-        foreach ($data['data'] as $index => $pile_data) {
-            $data_json[$product_id][$index+1]["enable"] = $pile_data['enable'];
-            $data_json[$product_id][$index+1]["time"] = 0;
-        }
-        $i++;
     }
     $result["data"] = $data_json;
     echo json_encode($result);
