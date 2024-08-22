@@ -129,8 +129,8 @@ function main($Secret, $Data, $Get) {
             break;
         }
         foreach ($data['data'] as $index => $pile_data) {
-            $data_json[$product_id][$index+1]["enable"] = $pile_data['enable'];
-            $data_json[$product_id][$index+1]["time"] = 0;
+            $data_json[$product_id][$index]["enable"] = $pile_data['enable'];
+            $data_json[$product_id][$index]["time"] = 0;
         }
         $i++;
     }
