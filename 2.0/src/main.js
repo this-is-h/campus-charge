@@ -81,7 +81,7 @@ const navbar = createApp({
             }
         };
         const onClickRight = () => {
-            window.open('https://github.com/this-is-h/nxu-charge', '_blank');
+            window.open('https://github.com/this-is-h/campus-charge', '_blank');
         };
         return {
             onClickLeft,

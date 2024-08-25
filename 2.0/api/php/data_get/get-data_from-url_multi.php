@@ -38,7 +38,6 @@ function dataStatus($number, $token) {
 function getToken($Secret) {
     $mongo_url = "mongodb+srv://" . $Secret["mongodb.username"] . ":" . $Secret["mongodb.password"] . "@" . $Secret["mongodb.server"] . "/?retryWrites=true&w=majority&appName=h";
     $manager = new MongoDB\Driver\Manager($mongo_url);
-    $seepower_pid = 0;
     $filter = ["id" => 1];
     $options = [];
     $query = new MongoDB\Driver\Query($filter, $options);
@@ -46,7 +45,19 @@ function getToken($Secret) {
     foreach($documents as $document){
         $document = json_decode(json_encode($document),true);
         $token = $document['token'];
+        if (empty($document['visits'])) {
+            $visits = 0;
+        } else {
+            $visits = $document['visits'];
+        }
     }
+    $bulk = new MongoDB\Driver\BulkWrite;
+    $bulk->update(
+        ['id' => 1],
+        ['$set' => ["visits" => $visits + 1]],
+        ['upsert' => true]
+    );
+    $manager->executeBulkWrite('nxu_charge.data', $bulk);
     return $token;
 }
 

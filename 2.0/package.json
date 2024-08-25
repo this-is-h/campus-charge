@@ -1,5 +1,5 @@
 {
-  "name": "nxu-charge-2.0-router",
+  "name": "campus-charge",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@mdui/icons": "^1.0.2",
+    "campus-charge": "file:",
     "mdui": "^2.0.3",
-    "nxu-charge-2.0-router": "file:",
     "pinia": "^2.1.7",
     "vant": "^4.8.1",
     "vue": "^3.3.11",

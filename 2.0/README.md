@@ -1,4 +1,4 @@
-# nxu-charge-2.0-router
+# campus-charge
 
 This template should help get you started developing with Vue 3 in Vite.
 
