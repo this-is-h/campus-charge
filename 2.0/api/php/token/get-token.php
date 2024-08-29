@@ -38,5 +38,5 @@ function main() {
     }
 
     // echo str_replace('https%3A%2F%2Fh5.2ye.cn%2F%40%2Flogin', 'https%3A%2F%2Fnxu-charge.thisish.cn%2Fapi%2Fphp%2Fback-token', json_decode($response, true)["data"]["authurl"]);
-    header("location:" . str_replace('https%3A%2F%2Fh5.2ye.cn%2F%40%2Flogin', 'https%3A%2F%2Fnxu-charge.thisish.cn%2Fapi%2Fphp%2Fback-token', json_decode($response, true)["data"]["authurl"]));
+    header("location:" . str_replace('https%3A%2F%2Fh5.2ye.cn%2F%40%2Flogin', 'https%3A%2F%2Fcampus-charge.thisish.cn%2Fapi%2Fphp%2Fback-token', json_decode($response, true)["data"]["authurl"]));
 }
