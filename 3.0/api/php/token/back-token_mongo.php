@@ -46,8 +46,8 @@ function main($Secret, $get_data) {
         die("cURL Error #:" . $err);
     }
 
-    // var_dump(json_decode($response, true));
-    // echo "<br><br>";
+    var_dump(json_decode($response, true));
+    echo "<br><br>";
 
     $mongo_url = "mongodb+srv://" . $Secret["mongodb.username"] . ":" . $Secret["mongodb.password"] . "@" . $Secret["mongodb.server"] . "/?retryWrites=true&w=majority&appName=h";
     $manager = new MongoDB\Driver\Manager($mongo_url);
@@ -62,6 +62,6 @@ function main($Secret, $get_data) {
     );
     $manager->executeBulkWrite('nxu_charge.data', $bulk);
 
-    echo '<div style="width:100vw;height:100vh;display:flex;flex-direction:column;justify-content: center;align-items: center;"><h1>成功！</h1></div>';
+    echo "成功更新token";
 }
 ?>

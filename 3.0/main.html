@@ -159,17 +159,6 @@
                         </van-cell>
                     </van-cell-group>
                     <van-cell-group inset>
-                        <van-cell title="项目交流群" center>
-                            <template #label >
-                                <van-image :src="img_group" width="80%" lazy-load>
-                                    <template #loading>
-                                        <van-loading type="spinner" size="20"></van-loading>
-                                    </template>
-                                </van-image>
-                            </template>
-                        </van-cell>
-                    </van-cell-group>
-                    <van-cell-group inset>
                         <van-cell title="其他声明" center>
                             <template #label >
                                 <ol style="padding-left: 1em;list-style: auto;">
@@ -262,26 +251,6 @@
             <van-tab title="更新日志" name="update">
                 <div id="update" class="mdui-prose">
                     <van-collapse v-model="updateActiveName" accordion>
-                        <van-collapse-item title="V 2.0.1" label="(2024-9-18)" name="21" style="font-weight: bold;">
-                            <div class="update-item">
-                                <ul class="mdui-list">
-                                    勿忘昨天之苦难，无愧今天之担当，以史为鉴，开创未来！<br>
-                                    <span style="font-size: small;text-align: right;width: 100%;display: block;">——《勿忘，九一八！》人民日报</span><br>
-                                    <van-tag type="primary">新增</van-tag>
-                                    <ol>
-                                        <li>交流群二维码</li>
-                                    </ol>
-                                    <van-tag type="warning">优化</van-tag>
-                                    <ol>
-                                        <li>更新token后的显示</li>
-                                    </ol>
-                                    <van-tag type="success">修复</van-tag>
-                                    <ol>
-                                        <li>token获取的错误</li>
-                                    </ol>
-                                </ul>
-                            </div>
-                        </van-collapse-item>
                         <van-collapse-item class="cell-blue" title="V 2.0.0" label="(2024-8-25)" name="20" style="font-weight: bold;">
                             <div class="update-item">
                                 <ul class="mdui-list">
@@ -657,7 +626,7 @@
                                     width="36px"
                                     height="36px"
                                     lazy-load
-                                    :src="img_head_w"
+                                    :src="head_w"
                                     style="margin-right: 10px;"
                                 ></van-image>
                             </template>

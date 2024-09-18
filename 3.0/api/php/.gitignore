@@ -1,0 +1,4 @@
+/vendor
+secret_dev.php
+/test
+set-environment-var.php

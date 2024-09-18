@@ -1,0 +1,16 @@
+{
+    "functions": {
+        "api/php/**/*": {
+            "runtime": "vercel-php@0.6.2",
+            "memory": 1024,
+            "maxDuration": 60
+        }
+    },
+    "cleanUrls": true,
+    "rewrites": [
+        { "source": "/main/:page", "destination": "/main" },
+        { "source": "/api/:match*", "destination": "/api/php/:match*" },
+        { "source": "/([^/]*)", "destination": "/error/403", "statusCode": 403 }
+    ],
+    "trailingSlash": false
+}

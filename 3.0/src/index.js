@@ -80,34 +80,34 @@ function getSecondsDifference(timestamp) {
 }
 
 function getData() {
-    // let result_array;
-    // try {
-    //     result_array = JSON.parse(`{"code":200,"succesful":true,"time":1722075424550,"token":true,"data":{"88227929":[1702374170000,1702374170000,1702374170000,0,1702374170000,1702374170000,1702374170000,1702374170000,0,1702374170000],"88227943":[1702374170000,1702374170000,1702374170000,1702374170000,1702374170000,1702374170000,1702374170000,1702374170000,1702374170000,1702374170000]}}`);
-    //     if (result_array["code"] == 200 && result_array["succesful"] == true) {
-    //         console.log(result_array);
-    //         if (!result_array["token"]) {
-    //             error.msg = "token";
-    //             error.type = "non-refresh";
-    //             error.isError = true;
-    //         }
-    //         dataProcessing(result_array);
-    //     } else {
-    //         error.msg = "data-custom";
-    //         error.content = result_array["msg"];
-    //         error.type = "normal";
-    //         error.isError = true;
-    //         pile_data_loading.value = false;
-    //         return;
-    //     }
-    // } catch(e) {
-    //     error.msg = "data";
-    //     error.type = "normal";
-    //     console.error("Error：" + e);
-    //     error.isError = true;
-    //     pile_data_loading.value = false;
-    //     return;
-    // }
-    // return; // 本地调试用
+    let result_array;
+    try {
+        result_array = JSON.parse(`{"code":200,"succesful":true,"time":1722075424550,"token":true,"data":{"88227929":[1702374170000,1702374170000,1702374170000,0,1702374170000,1702374170000,1702374170000,1702374170000,0,1702374170000],"88227943":[1702374170000,1702374170000,1702374170000,1702374170000,1702374170000,1702374170000,1702374170000,1702374170000,1702374170000,1702374170000]}}`);
+        if (result_array["code"] == 200 && result_array["succesful"] == true) {
+            console.log(result_array);
+            if (!result_array["token"]) {
+                error.msg = "token";
+                error.type = "non-refresh";
+                error.isError = true;
+            }
+            dataProcessing(result_array);
+        } else {
+            error.msg = "data-custom";
+            error.content = result_array["msg"];
+            error.type = "normal";
+            error.isError = true;
+            pile_data_loading.value = false;
+            return;
+        }
+    } catch(e) {
+        error.msg = "data";
+        error.type = "normal";
+        console.error("Error：" + e);
+        error.isError = true;
+        pile_data_loading.value = false;
+        return;
+    }
+    return; // 本地调试用
     pile_data_loading.value = true;
     updateCountdownTime.value = 10000;
     var xhr = createXHR();

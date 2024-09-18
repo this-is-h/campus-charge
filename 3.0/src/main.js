@@ -27,8 +27,7 @@ import {
 import 'vant/lib/index.css';
 
 import "@/assets/css/main.css";
-import img_head_w from '@/assets/img/head-w.jpg'
-import img_group from '@/assets/img/group.jpg'
+import head_w from '@/assets/img/head-w.jpg'
 import { UPDATE_ACTIVE_NAME } from './public.js';
 
 
@@ -117,8 +116,7 @@ const main = createApp({
             active,
             qaActiveName,
             updateActiveName,
-            img_head_w,
-            img_group
+            head_w,
         };
     },
 });

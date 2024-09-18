@@ -1,0 +1,52 @@
+html.mdui-theme-dark #footer {
+    box-shadow: 0.85px 3px 0 currentColor,0 0.25px 1px 0 currentColor
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+body > * {
+    flex-grow: 0;
+}
+
+
+.update-item,
+.qa-item,
+.about-item {
+    font-weight: normal;
+}
+
+.item-title {
+    margin: 0;
+    padding: 32px 16px 16px;
+    color: #969799;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px
+}
+
+.cell-blue .van-collapse-item__title span {
+    color: var(--van-tag-primary-color);
+}
+
+#about > * {
+    margin-top: 1em;
+}
+
+code {
+    color: #476582;
+    padding: .3em .4em;
+    margin: 0;
+    font-size: .85em;
+    background-color: rgba(27,31,35,.05);
+    border-radius: 3px;
+}
+
+a {
+    color: #0283EF;
+}

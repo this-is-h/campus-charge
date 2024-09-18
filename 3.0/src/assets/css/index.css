@@ -1,0 +1,354 @@
+html.mdui-theme-dark #footer {
+    box-shadow: 0.85px 3px 0 currentColor,0 0.25px 1px 0 currentColor
+}
+
+body {
+    /* display: flex;
+    flex-direction: column; */
+    overflow: hidden;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+/* body > * {
+    flex-grow: 0;
+} */
+
+#top-bar > * {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#port-select {
+    left: 10px;
+}
+
+#about-popover {
+    right: 10px;
+}
+
+#light-to-dark-div {
+    right: 40px;
+}
+
+#light-to-dark > * {
+    display: none;
+}
+
+#light-to-dark.light #light-outline {
+    display: block;
+}
+
+#light-to-dark.dark #dark {
+    display: block;
+}
+
+.container {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    transform: translateX(-57%);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+    /* filter: drop-shadow(0px 10px 5px rgba(0, 0, 0, 0.2)); */
+}
+.first_block,
+.center_block,
+.third_block {
+    position: absolute;
+    width: 100%;
+    height: 10%;
+    border-radius: 16px;
+    background-color: currentColor;
+}
+/* before */
+.container .first_block {
+    top: 7%;
+    animation: firstLine-rev ease-in-out 0.4s forwards;
+}
+.container .third_block {
+    bottom: 7%;
+    animation: thirdLine-rev ease-in-out 0.4s forwards;
+}
+.container .center_block {
+    animation: centerLine-rev ease-in-out 0.4s forwards;
+}
+.active .first_block {
+    animation: firstLine ease-in-out 0.4s forwards;
+}
+.active .third_block {
+    animation: thirdLine ease-in-out 0.4s forwards;
+}
+.active .center_block {
+    animation: centerLine ease-in-out 0.4s forwards;
+}
+.click {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: inherit;
+    height: inherit;
+}
+
+@keyframes firstLine {
+    0% {
+    }
+    50% {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    100% {
+        top: 50%;
+        transform: translateY(-50%) rotate(45deg);
+    }
+}
+@keyframes firstLine-rev {
+    0% {
+        top: 50%;
+        transform: translateY(-50%) rotate(45deg);
+    }
+    50% {
+        top: 50%;
+        transform: translateY(-50%) rotate(0deg);
+    }
+}
+
+@keyframes thirdLine {
+    0% {
+    }
+    50% {
+        bottom: 50%;
+        transform: translateY(50%);
+    }
+    100% {
+        bottom: 50%;
+        transform: translateY(50%) rotate(135deg);
+    }
+}
+@keyframes thirdLine-rev {
+    0% {
+        bottom: 50%;
+        transform: translateY(50%) rotate(135deg);
+    }
+    50% {
+        bottom: 50%;
+        transform: translateY(50%) rotate(0deg);
+    }
+}
+
+@keyframes centerLine {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
+}
+@keyframes centerLine-rev {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+#main {
+    padding-top: 40px;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+#locate {
+    height: 100%;
+    overflow: scroll;
+}
+
+.build {
+    position: fixed;
+    height: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: bold;
+    font-size: small;
+}
+
+.build.left {
+    left: 15px;
+}
+
+.build.right {
+    right: 15px;
+}
+
+.build::before {
+    content: "";
+    width: 2px;
+    height: 100%;
+    background-color: currentColor;
+    position: absolute;
+    right: 0px;
+    transform: translateX(350%);
+}
+
+.build::after {
+    content: "";
+    width: 2px;
+    height: 100%;
+    background-color: currentColor;
+    position: absolute;
+    left: 0px;
+    transform: translateX(-350%);
+}
+
+.port {
+    width: 96px;
+    height: 52px;
+    margin: 10px 15px;
+    border: 3px solid currentColor;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: grey;
+    font-weight: bold;
+}
+
+#locate div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#locate p {
+    margin: 0;
+}
+
+.pile {
+    margin-top: 1em;
+}
+
+.pile-head {
+    margin-bottom: 0em;
+    display: flex;
+    flex-direction: column;
+}
+
+.reverse .pile-head {
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+
+.reverse.column,
+.reverse .column {
+    flex-direction: column-reverse;
+}
+
+.reverse .row {
+    flex-direction: row-reverse;
+}
+
+.row {
+    flex-direction: row;
+}
+
+.column {
+    flex-direction: column;
+}
+
+.pile-message {
+    font-weight: bold;
+}
+
+.pile-no {
+    font-size: small;
+    font-weight: bold;
+}
+
+.port-main {
+    position: relative;
+}
+
+.port-main::after {
+    content: "";
+    height: 95%;
+    width: 2px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: currentColor;
+    border-radius: 5px;
+}
+
+.port-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.free,
+.free * {
+    --pile-hitch: rgb(253, 216, 53);
+    --port-using: rgb(233, 62, 9);
+    --port-free: rgb(33, 161, 85);
+    fill: rgb(33, 161, 85);
+    color: rgb(33, 161, 85);
+}
+
+.using,
+.using * {
+    fill:rgb(233, 62, 9);
+    color: rgb(233, 62, 9);
+}
+
+.tofree,
+.tofree * {
+    fill:rgb(253, 216, 53);
+    color: rgb(253, 216, 53);
+}
+
+.free .status,
+.free .port-fill {
+    display: none;
+}
+
+.overlay-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.overlay-block {
+    width: 120px;
+    height: 120px;
+    background-color: #fff;
+}
+
+#footer {
+    align-items: center;
+    font-weight: bold;
+    font-size: small;
+}
+
+#footer a {
+    color: currentColor;
+}
+
+p.separator {
+    margin: 0 0.5em;
+}
